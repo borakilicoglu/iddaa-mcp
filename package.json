@@ -11,7 +11,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/bora-kilicoglu/iddaa-mcp.git"
+    "url": "git+ssh://git@github.com/bora-kilicoglu/iddaa-mcp-server.git"
   },
   "keywords": [
     "iddaa",
