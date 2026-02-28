@@ -1,5 +1,6 @@
 import type { McpToolContext } from '../types'
 import { z } from 'zod'
+import { sportsbookEventsUrl } from './api'
 
 export function registerGetEventsTool({ mcp }: McpToolContext): void {
   mcp.tool(
@@ -12,7 +13,7 @@ export function registerGetEventsTool({ mcp }: McpToolContext): void {
     },
     async ({ st = 1, type = 0, version = 0 }) => {
       try {
-        const url = `https://sportsbookv2.iddaa.com/sportsbook/events?st=${st}&type=${type}&version=${version}`
+        const url = sportsbookEventsUrl({ st, type, version })
         const response = await fetch(url)
 
         if (!response.ok) {

@@ -1,6 +1,7 @@
 import type { McpToolContext } from '../types'
 import type { MarketDefinition, MatchedEvent } from './types'
 import { z } from 'zod'
+import { sportsbookEventsUrl, sportsbookUrl } from './api'
 
 export function registerGetDetailedEventsTool({ mcp }: McpToolContext): void {
   mcp.tool(
@@ -19,13 +20,9 @@ export function registerGetDetailedEventsTool({ mcp }: McpToolContext): void {
       try {
         const [eventsResponse, competitionsResponse, marketConfigResponse]
           = await Promise.all([
-            fetch(
-              `https://sportsbookv2.iddaa.com/sportsbook/events?st=${st}&type=${type}&version=${version}`,
-            ),
-            fetch('https://sportsbookv2.iddaa.com/sportsbook/competitions'),
-            fetch(
-              'https://sportsbookv2.iddaa.com/sportsbook/get_market_config',
-            ),
+            fetch(sportsbookEventsUrl({ st, type, version })),
+            fetch(sportsbookUrl('competitions')),
+            fetch(sportsbookUrl('get_market_config')),
           ])
 
         if (

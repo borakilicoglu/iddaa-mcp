@@ -48,7 +48,9 @@
     "lint:fix": "eslint --fix",
     "typecheck": "tsc --noEmit",
     "test": "vitest",
-    "release": "tsx scripts/release.ts"
+    "release": "tsx scripts/release.ts",
+    "prepare": "husky",
+    "test:ci": "vitest run"
   },
   "dependencies": {
     "@chatmcp/sdk": "^1.0.6",
@@ -64,6 +66,7 @@
     "concurrently": "^9.2.1",
     "dotenv": "^16.5.0",
     "esbuild": "^0.25.2",
+    "husky": "^9.1.7",
     "nodemon": "^3.1.9",
     "tsx": "^4.19.3",
     "typescript": "^5.8.3",

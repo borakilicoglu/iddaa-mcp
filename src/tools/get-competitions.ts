@@ -1,4 +1,5 @@
 import type { McpToolContext } from '../types'
+import { sportsbookUrl } from './api'
 
 export function registerGetCompetitionsTool({ mcp }: McpToolContext): void {
   mcp.tool(
@@ -7,7 +8,7 @@ export function registerGetCompetitionsTool({ mcp }: McpToolContext): void {
     {},
     async () => {
       try {
-        const url = 'https://sportsbookv2.iddaa.com/sportsbook/competitions'
+        const url = sportsbookUrl('competitions')
         const response = await fetch(url)
 
         if (!response.ok) {
