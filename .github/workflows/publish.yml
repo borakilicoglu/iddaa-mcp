@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write
+      id-token: write  # OIDC için zorunlu
 
     steps:
       - uses: actions/checkout@v4
@@ -28,4 +28,4 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
 
-      - run: npm publish --provenance --access public
+      - run: pnpm publish --provenance --access public --no-git-checks
