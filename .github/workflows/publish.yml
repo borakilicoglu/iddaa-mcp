@@ -26,4 +26,5 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
+      - run: npm install -g npm@latest
       - run: npm publish --provenance --access public
