@@ -1,6 +1,8 @@
 import type { McpToolContext } from '../types'
 import { z } from 'zod'
-import { sportsbookEventsUrl } from './api'
+import { fetchJson, sportsbookEventsUrl } from './api'
+import { formatToolError } from './helpers'
+import { eventsResponseSchema } from './schemas'
 
 export function registerGetEventsTool({ mcp }: McpToolContext): void {
   mcp.tool(
@@ -13,17 +15,14 @@ export function registerGetEventsTool({ mcp }: McpToolContext): void {
     },
     async ({ st = 1, type = 0, version = 0 }) => {
       try {
-        const url = sportsbookEventsUrl({ st, type, version })
-        const response = await fetch(url)
+        const { data } = await fetchJson(
+          sportsbookEventsUrl({ st, type, version }),
+          eventsResponseSchema,
+          'Events',
+        )
+        const events = data.events
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
-        }
-
-        const data = await response.json()
-        const events = data?.data?.events || []
-
-        if (!Array.isArray(events) || events.length === 0) {
+        if (events.length === 0) {
           return {
             content: [
               {
@@ -35,10 +34,8 @@ export function registerGetEventsTool({ mcp }: McpToolContext): void {
         }
 
         const formattedEvents = events
-          .map((event: any, index: number) => {
-            const date = event?.d
-              ? new Date(event.d * 1000).toLocaleString()
-              : 'Tarih bilgisi yok'
+          .map((event, index: number) => {
+            const date = new Date(event.d * 1000).toLocaleString()
             return `${index + 1}. ${event.hn} - ${event.an} | Tarih: ${date} | Event ID: ${event.i}`
           })
           .join('\n')
@@ -53,12 +50,11 @@ export function registerGetEventsTool({ mcp }: McpToolContext): void {
         }
       }
       catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error)
         return {
           content: [
             {
               type: 'text',
-              text: `Error fetching sports events: ${errorMessage}`,
+              text: formatToolError('get_events', error),
             },
           ],
         }

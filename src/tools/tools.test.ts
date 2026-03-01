@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { clearResponseCache } from './api'
 import { registerGetDetailedEventsTool } from './get-detailed-events'
 import { registerGetHighlightedEventsTool } from './get-highlighted-events'
 
@@ -38,6 +39,7 @@ function okJson(data: unknown) {
 afterEach(() => {
   vi.unstubAllGlobals()
   vi.restoreAllMocks()
+  clearResponseCache()
 })
 
 describe('tools', () => {
@@ -166,8 +168,194 @@ describe('tools', () => {
 
     const result = await handler({})
     expect(result.content[0].type).toBe('text')
-    expect(result.content[0].text).toContain(
-      'Error fetching highlighted matched events:',
+    expect(result.content[0].text).toContain('[get_highlighted_events]')
+  })
+
+  it('get_detailed_events returns no events text when limit=0', async () => {
+    const { mcp, getHandler } = createMockMcp()
+    registerGetDetailedEventsTool({ mcp } as any)
+    const handler = getHandler('get_detailed_events')
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) => {
+        if (url.includes('/sportsbook/events?')) {
+          return okJson({
+            data: {
+              events: [{
+                i: 1,
+                ci: 'league-1',
+                hn: 'Home',
+                an: 'Away',
+                mbc: 0,
+                d: 1_700_000_000,
+                m: [],
+              }],
+            },
+          })
+        }
+        if (url.endsWith('/sportsbook/competitions')) {
+          return okJson({ data: [{ i: 'league-1', n: 'League 1' }] })
+        }
+        if (url.endsWith('/sportsbook/get_market_config')) {
+          return okJson({ data: { m: {} } })
+        }
+        throw new Error(`Unexpected URL: ${url}`)
+      }),
     )
+
+    const result = await handler({ limit: 0 })
+    expect(result.content[0].text).toContain('Etkinlik bulunamadı.')
+  })
+
+  it('get_detailed_events handles missing market config with Unknown Market', async () => {
+    const { mcp, getHandler } = createMockMcp()
+    registerGetDetailedEventsTool({ mcp } as any)
+    const handler = getHandler('get_detailed_events')
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) => {
+        if (url.includes('/sportsbook/events?')) {
+          return okJson({
+            data: {
+              events: [{
+                i: 1,
+                ci: 'league-1',
+                hn: 'Home',
+                an: 'Away',
+                mbc: 0,
+                d: 1_700_000_000,
+                m: [{
+                  t: 99,
+                  st: 88,
+                  o: [{ n: 'X', odd: 2.5 }],
+                }],
+              }],
+            },
+          })
+        }
+        if (url.endsWith('/sportsbook/competitions')) {
+          return okJson({ data: [{ i: 'league-1', n: 'League 1' }] })
+        }
+        if (url.endsWith('/sportsbook/get_market_config')) {
+          return okJson({ data: { m: {} } })
+        }
+        throw new Error(`Unexpected URL: ${url}`)
+      }),
+    )
+
+    const result = await handler({})
+    expect(result.content[0].text).toContain('Unknown Market (t: 99, st: 88)')
+  })
+
+  it('get_highlighted_events returns no highlights text for empty he', async () => {
+    const { mcp, getHandler } = createMockMcp()
+    registerGetHighlightedEventsTool({ mcp } as any)
+    const handler = getHandler('get_highlighted_events')
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) => {
+        if (url.includes('/sportsbook/highlighted-events?')) {
+          return okJson({ data: { he: [] } })
+        }
+        if (url.includes('/sportsbook/events?')) {
+          return okJson({
+            data: {
+              events: [{
+                i: 1,
+                ci: 'league-1',
+                hn: 'Home',
+                an: 'Away',
+                mbc: 0,
+                d: 1_700_000_000,
+                m: [],
+              }],
+            },
+          })
+        }
+        if (url.endsWith('/sportsbook/competitions')) {
+          return okJson({ data: [{ i: 'league-1', n: 'League 1' }] })
+        }
+        if (url.endsWith('/sportsbook/get_market_config')) {
+          return okJson({ data: { m: {} } })
+        }
+        throw new Error(`Unexpected URL: ${url}`)
+      }),
+    )
+
+    const result = await handler({})
+    expect(result.content[0].text).toContain('Öne çıkan etkinlik bulunamadı.')
+  })
+
+  it('get_detailed_events returns standardized error on schema mismatch', async () => {
+    const { mcp, getHandler } = createMockMcp()
+    registerGetDetailedEventsTool({ mcp } as any)
+    const handler = getHandler('get_detailed_events')
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) => {
+        if (url.includes('/sportsbook/events?')) {
+          return okJson({ data: { events: [{ invalid: true }] } })
+        }
+        if (url.endsWith('/sportsbook/competitions')) {
+          return okJson({ data: [{ i: 'league-1', n: 'League 1' }] })
+        }
+        if (url.endsWith('/sportsbook/get_market_config')) {
+          return okJson({ data: { m: {} } })
+        }
+        throw new Error(`Unexpected URL: ${url}`)
+      }),
+    )
+
+    const result = await handler({})
+    expect(result.content[0].text).toContain('[get_detailed_events]')
+  })
+
+  it('reuses cached competitions and market config between calls', async () => {
+    const { mcp, getHandler } = createMockMcp()
+    registerGetDetailedEventsTool({ mcp } as any)
+    const handler = getHandler('get_detailed_events')
+
+    const fetchMock = vi.fn(async (url: string) => {
+      if (url.includes('/sportsbook/events?')) {
+        return okJson({
+          data: {
+            events: [{
+              i: 1,
+              ci: 'league-1',
+              hn: 'Home',
+              an: 'Away',
+              mbc: 0,
+              d: 1_700_000_000,
+              m: [],
+            }],
+          },
+        })
+      }
+      if (url.endsWith('/sportsbook/competitions')) {
+        return okJson({ data: [{ i: 'league-1', n: 'League 1' }] })
+      }
+      if (url.endsWith('/sportsbook/get_market_config')) {
+        return okJson({ data: { m: {} } })
+      }
+      throw new Error(`Unexpected URL: ${url}`)
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    await handler({})
+    await handler({})
+
+    const competitionsCalls = fetchMock.mock.calls.filter(([url]) =>
+      String(url).endsWith('/sportsbook/competitions'),
+    )
+    const marketConfigCalls = fetchMock.mock.calls.filter(([url]) =>
+      String(url).endsWith('/sportsbook/get_market_config'),
+    )
+
+    expect(competitionsCalls).toHaveLength(1)
+    expect(marketConfigCalls).toHaveLength(1)
   })
 })

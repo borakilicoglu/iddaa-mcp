@@ -1,7 +1,21 @@
 import type { McpToolContext } from '../types'
-import type { MarketDefinition, MatchedEvent } from './types'
+import type { MatchedEvent } from './types'
 import { z } from 'zod'
-import { sportsbookEventsUrl, sportsbookUrl } from './api'
+import { fetchJson, fetchJsonCached, sportsbookEventsUrl, sportsbookUrl } from './api'
+import {
+  buildCompetitionMap,
+  buildMarketConfigMap,
+  formatToolError,
+  mapMarketsToOdds,
+} from './helpers'
+import {
+  competitionsResponseSchema,
+  eventsResponseSchema,
+  highlightedEventsResponseSchema,
+  marketConfigResponseSchema,
+} from './schemas'
+
+const REFERENCE_CACHE_TTL_MS = 60_000
 
 export function registerGetHighlightedEventsTool({ mcp }: McpToolContext): void {
   mcp.tool(
@@ -18,105 +32,59 @@ export function registerGetHighlightedEventsTool({ mcp }: McpToolContext): void 
     },
     async ({ st = 1, type = 0, version = 0, limit = 1000 }) => {
       try {
-        const [
-          highlightsResponse,
-          eventsResponse,
-          competitionsResponse,
-          marketConfigResponse,
-        ] = await Promise.all([
-          fetch(
-            sportsbookUrl(`highlighted-events?st=${st}&type=${type}&version=${version}`),
-          ),
-          fetch(sportsbookEventsUrl({ st, type, version })),
-          fetch(sportsbookUrl('competitions')),
-          fetch(sportsbookUrl('get_market_config')),
-        ])
+        const [highlightsData, eventsData, competitionsData, marketConfigData]
+          = await Promise.all([
+            fetchJson(
+              sportsbookUrl(
+                `highlighted-events?st=${st}&type=${type}&version=${version}`,
+              ),
+              highlightedEventsResponseSchema,
+              'Highlights',
+            ),
+            fetchJson(
+              sportsbookEventsUrl({ st, type, version }),
+              eventsResponseSchema,
+              'Events',
+            ),
+            fetchJsonCached(
+              sportsbookUrl('competitions'),
+              competitionsResponseSchema,
+              'Competitions',
+              REFERENCE_CACHE_TTL_MS,
+            ),
+            fetchJsonCached(
+              sportsbookUrl('get_market_config'),
+              marketConfigResponseSchema,
+              'MarketConfig',
+              REFERENCE_CACHE_TTL_MS,
+            ),
+          ])
 
-        if (
-          !highlightsResponse.ok
-          || !eventsResponse.ok
-          || !competitionsResponse.ok
-          || !marketConfigResponse.ok
-        ) {
-          throw new Error(
-            `HTTP error! Highlights: ${highlightsResponse.status}, Events: ${eventsResponse.status}, Competitions: ${competitionsResponse.status}, MarketConfig: ${marketConfigResponse.status}`,
-          )
-        }
-
-        const highlightsData = await highlightsResponse.json()
-        const eventsData = await eventsResponse.json()
-        const competitionsData = await competitionsResponse.json()
-        const marketConfigData = await marketConfigResponse.json()
-
-        const highlightedEventIds = new Set()
-        const highlights = highlightsData?.data?.he || []
-        if (Array.isArray(highlights)) {
-          highlights.forEach((eventId) => {
-            highlightedEventIds.add(eventId)
-          })
-        }
-
-        const competitionMap = new Map()
-        const competitions = competitionsData?.data || []
-        if (Array.isArray(competitions)) {
-          competitions.forEach((competition) => {
-            competitionMap.set(competition.i, competition.n)
-          })
-        }
-
-        const marketConfigMap = new Map(
-          Object.entries(marketConfigData?.data?.m || {}),
-        )
+        const highlightedEventIds = new Set(highlightsData.data.he)
+        const competitionMap = buildCompetitionMap(competitionsData.data)
+        const marketConfigMap = buildMarketConfigMap(marketConfigData.data.m)
 
         const matchedEvents: MatchedEvent[] = []
-        const events = eventsData?.data?.events || []
-        if (Array.isArray(events)) {
-          events
-            .filter(event => highlightedEventIds.has(event.i))
-            .slice(0, limit)
-            .forEach((event) => {
-              const competitionName
-                = competitionMap.get(event.ci) || 'Unknown Competition'
+        eventsData.data.events
+          .filter(event => highlightedEventIds.has(event.i))
+          .slice(0, limit)
+          .forEach((event) => {
+            const competitionName
+              = competitionMap.get(event.ci) || 'Unknown Competition'
 
-              const odds = (event.m || []).map((market: any) => {
-                const marketKey = `${market.t}_${market.st}`
-                const marketConfig = marketConfigMap.get(marketKey) as
-                  | MarketDefinition
-                  | undefined
+            const odds = mapMarketsToOdds(event.m, marketConfigMap)
 
-                if (!marketConfig) {
-                  return {
-                    marketName: `Unknown Market (t: ${market.t}, st: ${market.st})`,
-                    outcomes: market.o,
-                  }
-                }
-
-                let marketName = marketConfig.n
-                if (market.sov !== undefined && marketName.includes('{0}')) {
-                  marketName = marketName.replace('{0}', market.sov)
-                }
-
-                return {
-                  marketName,
-                  outcomes: (market.o || []).map((outcome: any) => ({
-                    name: outcome.n,
-                    odd: outcome.odd,
-                  })),
-                }
-              })
-
-              matchedEvents.push({
-                eventId: event.i,
-                competitionId: event.ci,
-                hn: event.hn,
-                an: event.an,
-                mbc: event.mbc,
-                competition: competitionName,
-                date: new Date(event.d * 1000).toLocaleString(),
-                odds,
-              })
+            matchedEvents.push({
+              eventId: event.i,
+              competitionId: typeof event.ci === 'number' ? event.ci : undefined,
+              hn: event.hn,
+              an: event.an,
+              mbc: event.mbc,
+              competition: competitionName,
+              date: new Date(event.d * 1000).toLocaleString(),
+              odds,
             })
-        }
+          })
 
         if (matchedEvents.length === 0) {
           return {
@@ -165,12 +133,11 @@ export function registerGetHighlightedEventsTool({ mcp }: McpToolContext): void 
         }
       }
       catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error)
         return {
           content: [
             {
               type: 'text',
-              text: `Error fetching highlighted matched events: ${errorMessage}`,
+              text: formatToolError('get_highlighted_events', error),
             },
           ],
         }
