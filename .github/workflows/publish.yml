@@ -46,5 +46,20 @@ jobs:
       - name: Ensure tokenless npm auth (OIDC only)
         run: npm config delete //registry.npmjs.org/:_authToken || true
 
+      - name: Debug OIDC availability
+        run: |
+          if [ -n "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" ]; then
+            echo "OIDC request URL is present"
+          else
+            echo "OIDC request URL is missing"
+            exit 1
+          fi
+          if [ -n "${ACTIONS_ID_TOKEN_REQUEST_TOKEN:-}" ]; then
+            echo "OIDC request token is present"
+          else
+            echo "OIDC request token is missing"
+            exit 1
+          fi
+
       - name: Publish package
         run: npm publish --provenance --access public
