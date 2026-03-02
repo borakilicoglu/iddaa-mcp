@@ -1,7 +1,7 @@
 {
   "name": "iddaa-mcp",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Real-time iddaa sportsbook data for MCP workflows",
   "contributors": [
     {
