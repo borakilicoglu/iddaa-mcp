@@ -64,7 +64,7 @@ Use this when you have published your package in the npm registry
   "mcpServers": {
     "iddaa-mcp-stdio": {
       "command": "npx",
-      "args": ["iddaa-mcp-server", "--stdio"]
+      "args": ["iddaa-mcp", "--stdio"]
     }
   }
 }
@@ -116,8 +116,8 @@ Use this when you have published your package in the npm registry
 Run this in your terminal
 
 ```bash
-npx iddaa-mcp-server --http --port 4200
-# npx iddaa-mcp-server --sse --port 4201 (deprecated)
+npx iddaa-mcp --http --port 4200
+# npx iddaa-mcp --sse --port 4201 (deprecated)
 ```
 
 ```json

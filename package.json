@@ -1,26 +1,26 @@
 {
-  "name": "iddaa-mcp-server",
+  "name": "iddaa-mcp",
   "type": "module",
   "version": "0.1.7",
-  "description": "iddaa MCP Server",
+  "description": "MCP server for iddaa sportsbook events, competitions, and odds",
   "contributors": [
     {
       "name": "Bora Kilicoglu"
     }
   ],
   "license": "MIT",
-  "homepage": "https://github.com/borakilicoglu/iddaa-mcp-server#readme",
+  "homepage": "https://github.com/borakilicoglu/iddaa-mcp#readme",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/borakilicoglu/iddaa-mcp-server.git"
+    "url": "git+ssh://git@github.com/borakilicoglu/iddaa-mcp.git"
   },
   "bugs": {
-    "url": "https://github.com/borakilicoglu/iddaa-mcp-server/issues"
+    "url": "https://github.com/borakilicoglu/iddaa-mcp/issues"
   },
   "keywords": [
     "iddaa",
     "iddaa-mcp",
-    "iddaa-mcp-server",
+    "iddaa-mcp",
     "model-context-protocol"
   ],
   "exports": {
@@ -28,7 +28,7 @@
     "./cli": "./bin/cli.mjs"
   },
   "bin": {
-    "iddaa-mcp-server": "./bin/cli.mjs"
+    "iddaa-mcp": "./bin/cli.mjs"
   },
   "files": [
     "bin",

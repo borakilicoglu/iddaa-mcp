@@ -9,7 +9,7 @@ const version = packageJson.version
 
 const cli = defineCommand({
   meta: {
-    name: 'iddaa-mcp-server',
+    name: 'iddaa-mcp',
     version,
     description: 'Run the iddaa MCP server with stdio, http, or sse transport',
   },
@@ -33,7 +33,7 @@ const cli = defineCommand({
   },
   async run({ args }) {
     const mode = args.http ? 'http' : args.sse ? 'sse' : 'stdio'
-    const mcp = createServer({ name: 'iddaa-mcp-server', version })
+    const mcp = createServer({ name: 'iddaa-mcp', version })
 
     process.on('SIGTERM', () => stopServer(mcp))
     process.on('SIGINT', () => stopServer(mcp))
