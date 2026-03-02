@@ -2,7 +2,7 @@
   "name": "iddaa-mcp",
   "type": "module",
   "version": "0.1.0",
-  "description": "MCP server for iddaa sportsbook events, competitions, and odds",
+  "description": "Real-time iddaa sportsbook data for MCP workflows",
   "contributors": [
     {
       "name": "Bora Kilicoglu"

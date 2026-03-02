@@ -1,6 +1,16 @@
-# iddaa MCP Server
+# iddaa-mcp
 
-iddaa MCP Server gives you a focused MCP integration for iddaa sportsbook data with local and remote transport support.
+`iddaa-mcp` gives you a focused MCP integration for iddaa sportsbook data with local and remote transport support.
+
+## npm Package
+
+This project is published on npm as [`iddaa-mcp`](https://www.npmjs.com/package/iddaa-mcp).
+
+Install it with:
+
+```bash
+npm install -g iddaa-mcp
+```
 
 ## Features
 
