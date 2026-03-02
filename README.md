@@ -1,5 +1,7 @@
 # iddaa-mcp
 
+![iddaa-mcp cover](./public/cover.svg)
+
 `iddaa-mcp` gives you a focused MCP integration for iddaa sportsbook data with local and remote transport support.
 
 ## npm Package

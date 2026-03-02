@@ -1,0 +1,24 @@
+<svg width="2000" height="680" viewBox="0 0 2000 680" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">iddaa-mcp cover</title>
+  <desc id="desc">Mint gradient background with diagonal stripes and centered title text</desc>
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="2000" y2="680" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#CFECE0"/>
+      <stop offset="1" stop-color="#BFE3D8"/>
+    </linearGradient>
+    <pattern id="stripes" width="120" height="120" patternUnits="userSpaceOnUse" patternTransform="rotate(58)">
+      <line x1="0" y1="0" x2="0" y2="120" stroke="#AFD9CD" stroke-width="6"/>
+    </pattern>
+  </defs>
+
+  <rect width="2000" height="680" fill="url(#bg)"/>
+  <rect width="2000" height="680" fill="url(#stripes)" opacity="0.55"/>
+
+  <g text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" fill="#005D4D">
+    <text x="1000" y="255" font-size="74" font-weight="700" letter-spacing="0">iddaa-mcp</text>
+    <text x="1000" y="340" font-size="74" font-weight="700" letter-spacing="0">Instant Match Intelligence</text>
+    <text x="1000" y="420" font-size="54" font-weight="500" fill="#007D68">Real-time iddaa sportsbook data</text>
+    <text x="1000" y="486" font-size="54" font-weight="500" fill="#007D68">for LLM and AI workflows</text>
+  </g>
+</svg>
