@@ -28,3 +28,9 @@ Add this to `.cursor/mcp.json`:
   }
 }
 ```
+
+## Language Support
+
+- Default response language is Turkish (`tr`).
+- You can set `locale: "en"` in tool arguments for English output.
+- Supported values: `tr`, `en`.

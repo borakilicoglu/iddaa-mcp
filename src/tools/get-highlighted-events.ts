@@ -8,6 +8,7 @@ import {
   formatToolError,
   mapMarketsToOdds,
 } from './helpers'
+import { formatUnixDate, getDictionary } from './i18n'
 import {
   competitionsResponseSchema,
   eventsResponseSchema,
@@ -29,9 +30,15 @@ export function registerGetHighlightedEventsTool({ mcp }: McpToolContext): void 
         .number()
         .optional()
         .describe('Limit number of results (default: 1000)'),
+      locale: z
+        .enum(['tr', 'en'])
+        .optional()
+        .default('tr')
+        .describe('Language for response text (default: tr)'),
     },
-    async ({ st = 1, type = 0, version = 0, limit = 1000 }) => {
+    async ({ st = 1, type = 0, version = 0, limit = 1000, locale = 'tr' }) => {
       try {
+        const dict = getDictionary(locale)
         const [highlightsData, eventsData, competitionsData, marketConfigData]
           = await Promise.all([
             fetchJson(
@@ -70,9 +77,9 @@ export function registerGetHighlightedEventsTool({ mcp }: McpToolContext): void 
           .slice(0, limit)
           .forEach((event) => {
             const competitionName
-              = competitionMap.get(event.ci) || 'Unknown Competition'
+              = competitionMap.get(event.ci) || dict.unknownCompetition
 
-            const odds = mapMarketsToOdds(event.m, marketConfigMap)
+            const odds = mapMarketsToOdds(event.m, marketConfigMap, dict.unknownMarket)
 
             matchedEvents.push({
               eventId: event.i,
@@ -81,7 +88,7 @@ export function registerGetHighlightedEventsTool({ mcp }: McpToolContext): void 
               an: event.an,
               mbc: event.mbc,
               competition: competitionName,
-              date: new Date(event.d * 1000).toLocaleString(),
+              date: formatUnixDate(event.d, locale),
               odds,
             })
           })
@@ -91,7 +98,7 @@ export function registerGetHighlightedEventsTool({ mcp }: McpToolContext): void 
             content: [
               {
                 type: 'text',
-                text: 'Öne çıkan etkinlik bulunamadı.',
+                text: dict.highlightedNotFound,
               },
             ],
           }
@@ -114,11 +121,11 @@ export function registerGetHighlightedEventsTool({ mcp }: McpToolContext): void 
 
             return [
               `${index + 1}. ${event.hn} - ${event.an}`,
-              `Lig: ${event.competition}`,
-              `Tarih: ${event.date}`,
+              `${dict.leagueLabel}: ${event.competition}`,
+              `${dict.dateLabel}: ${event.date}`,
               marketPreview
-                ? `Oranlar:\n${marketPreview}`
-                : 'Oran bilgisi yok.',
+                ? `${dict.oddsLabel}:\n${marketPreview}`
+                : dict.noOdds,
             ].join('\n')
           })
           .join('\n\n')
@@ -127,7 +134,7 @@ export function registerGetHighlightedEventsTool({ mcp }: McpToolContext): void 
           content: [
             {
               type: 'text',
-              text: `Öne çıkan etkinlikler (${matchedEvents.length}):\n\n${formattedEvents}`,
+              text: `${dict.highlightedTitle(matchedEvents.length)}\n\n${formattedEvents}`,
             },
           ],
         }

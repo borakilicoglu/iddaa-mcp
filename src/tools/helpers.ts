@@ -17,6 +17,7 @@ export function buildMarketConfigMap(marketConfig: Record<string, MarketDefiniti
 export function mapMarketsToOdds(
   markets: EventMarket[],
   marketConfigMap: Map<string, MarketDefinition>,
+  unknownMarketLabel: string = 'Unknown Market',
 ): MatchedEvent['odds'] {
   return markets.map((market) => {
     const marketKey = `${market.t}_${market.st}`
@@ -24,7 +25,7 @@ export function mapMarketsToOdds(
 
     if (!marketConfig) {
       return {
-        marketName: `Unknown Market (t: ${market.t}, st: ${market.st})`,
+        marketName: `${unknownMarketLabel} (t: ${market.t}, st: ${market.st})`,
         outcomes: market.o.map(outcome => ({
           name: outcome.n,
           odd: outcome.odd,

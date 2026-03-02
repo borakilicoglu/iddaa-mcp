@@ -2,6 +2,7 @@ import type { McpToolContext } from '../types'
 import { z } from 'zod'
 import { fetchJson, sportsbookEventsUrl } from './api'
 import { formatToolError } from './helpers'
+import { formatUnixDate, getDictionary } from './i18n'
 import { eventsResponseSchema } from './schemas'
 
 export function registerGetEventsTool({ mcp }: McpToolContext): void {
@@ -12,9 +13,15 @@ export function registerGetEventsTool({ mcp }: McpToolContext): void {
       st: z.number().optional().describe('Sport type filter (default: 1)'),
       type: z.number().optional().describe('Event type filter (default: 0)'),
       version: z.number().optional().describe('API version (default: 0)'),
+      locale: z
+        .enum(['tr', 'en'])
+        .optional()
+        .default('tr')
+        .describe('Language for response text (default: tr)'),
     },
-    async ({ st = 1, type = 0, version = 0 }) => {
+    async ({ st = 1, type = 0, version = 0, locale = 'tr' }) => {
       try {
+        const dict = getDictionary(locale)
         const { data } = await fetchJson(
           sportsbookEventsUrl({ st, type, version }),
           eventsResponseSchema,
@@ -27,7 +34,7 @@ export function registerGetEventsTool({ mcp }: McpToolContext): void {
             content: [
               {
                 type: 'text',
-                text: 'Etkinlik bulunamadı.',
+                text: dict.eventsNotFound,
               },
             ],
           }
@@ -35,8 +42,8 @@ export function registerGetEventsTool({ mcp }: McpToolContext): void {
 
         const formattedEvents = events
           .map((event, index: number) => {
-            const date = new Date(event.d * 1000).toLocaleString()
-            return `${index + 1}. ${event.hn} - ${event.an} | Tarih: ${date} | Event ID: ${event.i}`
+            const date = formatUnixDate(event.d, locale)
+            return `${index + 1}. ${event.hn} - ${event.an} | ${dict.dateLabel}: ${date} | Event ID: ${event.i}`
           })
           .join('\n')
 
@@ -44,7 +51,7 @@ export function registerGetEventsTool({ mcp }: McpToolContext): void {
           content: [
             {
               type: 'text',
-              text: `Etkinlikler (${events.length}):\n\n${formattedEvents}`,
+              text: `${dict.eventsTitle(events.length)}\n\n${formattedEvents}`,
             },
           ],
         }

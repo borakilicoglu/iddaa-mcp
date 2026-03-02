@@ -31,6 +31,24 @@ npm install -g iddaa-mcp
 - MCP client integration via `.cursor/mcp.json`.
 - Build and runtime flow with `pnpm`.
 
+## Language Support
+
+- Default response language is Turkish (`tr`).
+- You can set `locale: "en"` in tool arguments for English output.
+- Supported values: `tr`, `en`.
+
+Example:
+
+```json
+{
+  "tool": "get_highlighted_events",
+  "arguments": {
+    "limit": 5,
+    "locale": "en"
+  }
+}
+```
+
 ## Getting Started
 
 ### Prerequisites

@@ -11,3 +11,21 @@
 
 - The default filter values are `st=1`, `type=0`, and `version=0`.
 - `limit` defaults to `1000` where applicable.
+
+## Language Support
+
+- Default response language is Turkish (`tr`).
+- You can set `locale: "en"` in tool arguments for English output.
+- Supported values: `tr`, `en`.
+
+Example:
+
+```json
+{
+  "tool": "get_highlighted_events",
+  "arguments": {
+    "limit": 5,
+    "locale": "en"
+  }
+}
+```

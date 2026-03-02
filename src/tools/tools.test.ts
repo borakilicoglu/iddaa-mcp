@@ -1,6 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { clearResponseCache } from './api'
+import { registerGetCompetitionsTool } from './get-competitions'
 import { registerGetDetailedEventsTool } from './get-detailed-events'
+import { registerGetEventsTool } from './get-events'
 import { registerGetHighlightedEventsTool } from './get-highlighted-events'
 
 type ToolHandler = (args: Record<string, unknown>) => Promise<any>
@@ -43,6 +45,58 @@ afterEach(() => {
 })
 
 describe('tools', () => {
+  it('get_competitions supports English locale', async () => {
+    const { mcp, getHandler } = createMockMcp()
+    registerGetCompetitionsTool({ mcp } as any)
+    const handler = getHandler('get_competitions')
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) => {
+        if (url.endsWith('/sportsbook/competitions')) {
+          return okJson({ data: [{ i: 1, n: 'Super Lig', si: '1', ec: 3 }] })
+        }
+        throw new Error(`Unexpected URL: ${url}`)
+      }),
+    )
+
+    const result = await handler({ locale: 'en' })
+    expect(result.content[0].text).toContain('Competitions (1):')
+    expect(result.content[0].text).toContain('Events: 3')
+  })
+
+  it('get_events supports English locale', async () => {
+    const { mcp, getHandler } = createMockMcp()
+    registerGetEventsTool({ mcp } as any)
+    const handler = getHandler('get_events')
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) => {
+        if (url.includes('/sportsbook/events?')) {
+          return okJson({
+            data: {
+              events: [{
+                i: 1,
+                ci: 'league-1',
+                hn: 'Home',
+                an: 'Away',
+                mbc: 0,
+                d: 1_700_000_000,
+                m: [],
+              }],
+            },
+          })
+        }
+        throw new Error(`Unexpected URL: ${url}`)
+      }),
+    )
+
+    const result = await handler({ locale: 'en' })
+    expect(result.content[0].text).toContain('Events (1):')
+    expect(result.content[0].text).toContain('Date:')
+  })
+
   it('get_detailed_events uses default limit=1000', async () => {
     const { mcp, getHandler } = createMockMcp()
     registerGetDetailedEventsTool({ mcp } as any)
@@ -111,6 +165,46 @@ describe('tools', () => {
     const result = await handler({ limit: 2 })
     expect(result.content[0].type).toBe('text')
     expect(result.content[0].text).toContain('Etkinlikler (2):')
+  })
+
+  it('get_detailed_events supports English locale', async () => {
+    const { mcp, getHandler } = createMockMcp()
+    registerGetDetailedEventsTool({ mcp } as any)
+    const handler = getHandler('get_detailed_events')
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) => {
+        if (url.includes('/sportsbook/events?')) {
+          return okJson({
+            data: {
+              events: [{
+                i: 1,
+                ci: 'league-1',
+                hn: 'Home',
+                an: 'Away',
+                mbc: 0,
+                d: 1_700_000_000,
+                m: [],
+              }],
+            },
+          })
+        }
+        if (url.endsWith('/sportsbook/competitions')) {
+          return okJson({ data: [{ i: 'league-1', n: 'League 1' }] })
+        }
+        if (url.endsWith('/sportsbook/get_market_config')) {
+          return okJson({ data: { m: {} } })
+        }
+        throw new Error(`Unexpected URL: ${url}`)
+      }),
+    )
+
+    const result = await handler({ locale: 'en' })
+    expect(result.content[0].text).toContain('Events (1):')
+    expect(result.content[0].text).toContain('League:')
+    expect(result.content[0].text).toContain('Date:')
+    expect(result.content[0].text).toContain('No odds data.')
   })
 
   it('get_highlighted_events uses default limit=1000', async () => {
@@ -208,7 +302,7 @@ describe('tools', () => {
     expect(result.content[0].text).toContain('Etkinlik bulunamadı.')
   })
 
-  it('get_detailed_events handles missing market config with Unknown Market', async () => {
+  it('get_detailed_events handles missing market config with localized fallback', async () => {
     const { mcp, getHandler } = createMockMcp()
     registerGetDetailedEventsTool({ mcp } as any)
     const handler = getHandler('get_detailed_events')
@@ -246,7 +340,7 @@ describe('tools', () => {
     )
 
     const result = await handler({})
-    expect(result.content[0].text).toContain('Unknown Market (t: 99, st: 88)')
+    expect(result.content[0].text).toContain('Bilinmeyen Market (t: 99, st: 88)')
   })
 
   it('get_highlighted_events returns no highlights text for empty he', async () => {
