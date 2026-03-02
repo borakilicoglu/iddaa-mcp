@@ -26,3 +26,4 @@ llms_*.txt
 
 .hidden
 .pnpm-store/
+docs/.vitepress/.temp/
