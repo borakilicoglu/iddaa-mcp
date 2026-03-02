@@ -48,21 +48,21 @@ export const highlightedEventsResponseSchema = z.object({
 })
 
 export const marketDefinitionSchema = z.object({
-  d: z.string(),
-  i: z.number(),
-  il: z.boolean(),
-  in: z.boolean(),
-  mdv: z.number(),
-  mlv: z.number(),
-  mmdv: z.number(),
-  mmlv: z.number(),
-  mst: z.number(),
-  mt: z.number(),
-  n: z.string(),
+  d: z.string().optional(),
+  i: z.number().optional(),
+  il: z.boolean().optional(),
+  in: z.boolean().optional(),
+  mdv: z.number().optional(),
+  mlv: z.number().optional(),
+  mmdv: z.number().optional(),
+  mmlv: z.number().optional(),
+  mst: z.number().optional(),
+  mt: z.number().optional(),
+  n: z.string().optional().default('Unknown Market'),
   o: z.record(z.string(), z.string()).optional(),
-  p: z.number(),
-  st: z.number(),
-})
+  p: z.number().optional(),
+  st: z.number().optional(),
+}).passthrough()
 
 export const marketConfigResponseSchema = z.object({
   data: z.object({

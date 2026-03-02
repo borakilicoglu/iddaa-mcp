@@ -289,6 +289,60 @@ describe('tools', () => {
     expect(result.content[0].text).toContain('Öne çıkan etkinlik bulunamadı.')
   })
 
+  it('get_highlighted_events tolerates incomplete market config entries', async () => {
+    const { mcp, getHandler } = createMockMcp()
+    registerGetHighlightedEventsTool({ mcp } as any)
+    const handler = getHandler('get_highlighted_events')
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) => {
+        if (url.includes('/sportsbook/highlighted-events?')) {
+          return okJson({ data: { he: [1] } })
+        }
+        if (url.includes('/sportsbook/events?')) {
+          return okJson({
+            data: {
+              events: [{
+                i: 1,
+                ci: 'league-1',
+                hn: 'Home',
+                an: 'Away',
+                mbc: 0,
+                d: 1_700_000_000,
+                m: [{
+                  t: 2,
+                  st: 821,
+                  o: [{ n: '1', odd: 1.8 }],
+                }],
+              }],
+            },
+          })
+        }
+        if (url.endsWith('/sportsbook/competitions')) {
+          return okJson({ data: [{ i: 'league-1', n: 'League 1' }] })
+        }
+        if (url.endsWith('/sportsbook/get_market_config')) {
+          return okJson({
+            data: {
+              m: {
+                // Upstream can omit several fields such as "d" and "in".
+                '2_821': {
+                  n: 'Match Result',
+                },
+              },
+            },
+          })
+        }
+        throw new Error(`Unexpected URL: ${url}`)
+      }),
+    )
+
+    const result = await handler({})
+    expect(result.content[0].text).toContain('Öne çıkan etkinlikler (1):')
+    expect(result.content[0].text).toContain('Match Result')
+  })
+
   it('get_detailed_events returns standardized error on schema mismatch', async () => {
     const { mcp, getHandler } = createMockMcp()
     registerGetDetailedEventsTool({ mcp } as any)
