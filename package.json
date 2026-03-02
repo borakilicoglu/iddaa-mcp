@@ -1,0 +1,87 @@
+{
+  "name": "iddaa-mcp",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "MCP server for iddaa sportsbook events, competitions, and odds",
+  "contributors": [
+    {
+      "name": "Bora Kilicoglu"
+    }
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/borakilicoglu/iddaa-mcp#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/borakilicoglu/iddaa-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/borakilicoglu/iddaa-mcp/issues"
+  },
+  "keywords": [
+    "iddaa",
+    "iddaa-mcp",
+    "iddaa-mcp",
+    "model-context-protocol"
+  ],
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./cli": "./bin/cli.mjs"
+  },
+  "bin": {
+    "iddaa-mcp": "./bin/cli.mjs"
+  },
+  "files": [
+    "bin",
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "unbuild && pnpm run chmod-run",
+    "chmod-run": "node -e \"fs.chmodSync('dist/index.mjs', '755'); if (require('fs').existsSync('dist/cli.mjs')) require('fs').chmodSync('dist/cli.mjs', '755');\"",
+    "start": "nodemon --exec 'tsx src/index.ts'",
+    "dev:prepare": "nr build",
+    "inspect": "npx @modelcontextprotocol/inspector@latest",
+    "dev": "concurrently 'unbuild --stub' 'pnpm run inspect'",
+    "run-cli": "node bin/cli.mjs",
+    "dev-stdio": "concurrently 'pnpm run run-cli' 'pnpm run inspect node ./bin/cli.mjs'",
+    "dev-http": "concurrently 'pnpm run run-cli -- --http --port 4200' 'pnpm run inspect http://localhost:4200/mcp'",
+    "dev-sse": "concurrently 'pnpm run run-cli -- --sse --port 4201' 'pnpm run inspect http://localhost:4201/sse'",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "release": "tsx scripts/release.ts",
+    "prepare": "husky",
+    "test:ci": "vitest run"
+  },
+  "dependencies": {
+    "@chatmcp/sdk": "^1.0.6",
+    "@modelcontextprotocol/sdk": "^1.9.0",
+    "citty": "^0.1.6",
+    "h3": "^1.15.1",
+    "ofetch": "^1.4.1",
+    "zod": "^3.24.3"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^4.12.0",
+    "@types/node": "^22.14.1",
+    "concurrently": "^9.2.1",
+    "dotenv": "^16.5.0",
+    "esbuild": "^0.25.2",
+    "eslint": "^9.24.0",
+    "husky": "^9.1.7",
+    "nodemon": "^3.1.9",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.3",
+    "unbuild": "^3.5.0",
+    "vite": "^6.3.1",
+    "vitest": "^3.1.1"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "semi": false,
+    "trailingComma": "all"
+  }
+}

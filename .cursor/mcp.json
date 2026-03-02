@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "iddaa-mcp-stdio": {
+      "command": "node",
+      "args": ["./bin/cli.mjs"]
+    },
+    "iddaa-mcp-http": {
+      "url": "http://localhost:4200/mcp"
+    },
+    "iddaa-mcp-sse": {
+      "url": "http://localhost:4201/sse"
+    }
+  }
+}
