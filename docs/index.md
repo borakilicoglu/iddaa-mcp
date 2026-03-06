@@ -18,9 +18,11 @@ hero:
 
 features:
   - title: Ready-to-use Tools
-    details: get_competitions, get_events, get_detailed_events, and get_highlighted_events.
+    details: get_competitions, get_events, get_detailed_events, get_highlighted_events, and get_league_fixture.
   - title: Multiple Transports
     details: Run with stdio (default), streamable HTTP, or deprecated SSE.
   - title: Built for MCP Clients
     details: Works with Cursor and other MCP-compatible clients.
+  - title: Fixture + Strategy
+    details: get_league_fixture supports week/all-weeks fetching, optional martingale/fibonacci simulation, and comeback filtering.
 ---

@@ -4,6 +4,7 @@ import { registerGetCompetitionsTool } from './get-competitions'
 import { registerGetDetailedEventsTool } from './get-detailed-events'
 import { registerGetEventsTool } from './get-events'
 import { registerGetHighlightedEventsTool } from './get-highlighted-events'
+import { registerGetLeagueFixtureTool } from './get-league-fixture'
 
 type ToolHandler = (args: Record<string, unknown>) => Promise<any>
 
@@ -505,5 +506,278 @@ describe('tools', () => {
 
     expect(competitionsCalls).toHaveLength(1)
     expect(marketConfigCalls).toHaveLength(1)
+  })
+
+  it('get_league_fixture returns formatted fixture text', async () => {
+    const { mcp, getHandler } = createMockMcp()
+    registerGetLeagueFixtureTool({ mcp } as any)
+    const handler = getHandler('get_league_fixture')
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) => {
+        if (url.includes('FixtureHandler.aspx')) {
+          return {
+            ok: true,
+            status: 200,
+            text: async () => JSON.stringify({
+              d: JSON.stringify({
+                matches: [
+                  {
+                    date: '2026-03-01',
+                    home_team: 'Team A',
+                    away_team: 'Team B',
+                    home_goals: 1,
+                    away_goals: 1,
+                    odds_draw: 3.2,
+                  },
+                ],
+              }),
+            }),
+          }
+        }
+        throw new Error(`Unexpected URL: ${url}`)
+      }),
+    )
+
+    const result = await handler({ league: 'Bundesliga', week: 1 })
+    expect(result.content[0].text).toContain('Bundesliga | Week 1')
+    expect(result.content[0].text).toContain('Team A - Team B')
+    expect(result.content[0].text).toContain('Score: 1-1')
+    expect(result.content[0].text).toContain('X:3.2')
+  })
+
+  it('get_league_fixture validates week range', async () => {
+    const { mcp, getHandler } = createMockMcp()
+    registerGetLeagueFixtureTool({ mcp } as any)
+    const handler = getHandler('get_league_fixture')
+
+    const result = await handler({ league: 'Bundesliga', week: 99 })
+    expect(result.content[0].text).toContain('[get_league_fixture]')
+    expect(result.content[0].text).toContain('Invalid week')
+  })
+
+  it('get_league_fixture returns all weeks when week is omitted', async () => {
+    const { mcp, getHandler } = createMockMcp()
+    registerGetLeagueFixtureTool({ mcp } as any)
+    const handler = getHandler('get_league_fixture')
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) => {
+        if (url.includes('FixtureHandler.aspx')) {
+          return {
+            ok: true,
+            status: 200,
+            text: async () => JSON.stringify({
+              d: JSON.stringify({
+                matches: [],
+              }),
+            }),
+          }
+        }
+        throw new Error(`Unexpected URL: ${url}`)
+      }),
+    )
+
+    const result = await handler({ league: 'Bundesliga' })
+    expect(result.content[0].text).toContain('Bundesliga | All Weeks | Total Weeks: 34')
+    expect(result.content[0].text).toContain('Bundesliga | Week 1')
+    expect(result.content[0].text).toContain('Bundesliga | Week 34')
+  })
+
+  it('get_league_fixture treats week=null as all weeks', async () => {
+    const { mcp, getHandler } = createMockMcp()
+    registerGetLeagueFixtureTool({ mcp } as any)
+    const handler = getHandler('get_league_fixture')
+
+    const fetchMock = vi.fn(async (url: string) => {
+      if (url.includes('FixtureHandler.aspx')) {
+        return {
+          ok: true,
+          status: 200,
+          text: async () => JSON.stringify({
+            d: JSON.stringify({
+              matches: [],
+            }),
+          }),
+        }
+      }
+      throw new Error(`Unexpected URL: ${url}`)
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    const result = await handler({ league: 'Bundesliga', week: null })
+    expect(result.content[0].text).toContain('Bundesliga | All Weeks | Total Weeks: 34')
+    expect(fetchMock).toHaveBeenCalledTimes(34)
+  })
+
+  it('get_league_fixture retries when server payload is null', async () => {
+    const { mcp, getHandler } = createMockMcp()
+    registerGetLeagueFixtureTool({ mcp } as any)
+    const handler = getHandler('get_league_fixture')
+
+    let callCount = 0
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) => {
+        if (!url.includes('FixtureHandler.aspx')) {
+          throw new Error(`Unexpected URL: ${url}`)
+        }
+
+        callCount += 1
+        if (callCount === 1) {
+          return {
+            ok: true,
+            status: 200,
+            text: async () => 'null',
+          }
+        }
+
+        return {
+          ok: true,
+          status: 200,
+          text: async () => JSON.stringify({
+            d: JSON.stringify({
+              matches: [{
+                date: '2026-03-01',
+                home_team: 'Retry FC',
+                away_team: 'Second Try',
+                home_goals: 0,
+                away_goals: 0,
+                odds_draw: 3.1,
+              }],
+            }),
+          }),
+        }
+      }),
+    )
+
+    const result = await handler({ league: 'Bundesliga', week: 1 })
+    expect(result.content[0].text).toContain('Retry FC - Second Try')
+    expect(callCount).toBe(2)
+  })
+
+  it('get_league_fixture appends strategy summary for martingale', async () => {
+    const { mcp, getHandler } = createMockMcp()
+    registerGetLeagueFixtureTool({ mcp } as any)
+    const handler = getHandler('get_league_fixture')
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) => {
+        if (!url.includes('FixtureHandler.aspx')) {
+          throw new Error(`Unexpected URL: ${url}`)
+        }
+        return {
+          ok: true,
+          status: 200,
+          text: async () => JSON.stringify({
+            d: JSON.stringify({
+              matches: [
+                {
+                  date: '2026-03-01',
+                  home_team: 'A',
+                  away_team: 'B',
+                  home_goals: 1,
+                  away_goals: 0,
+                  odds_draw: 3.2,
+                },
+                {
+                  date: '2026-03-02',
+                  home_team: 'C',
+                  away_team: 'D',
+                  home_goals: 2,
+                  away_goals: 2,
+                  odds_draw: 3,
+                },
+              ],
+            }),
+          }),
+        }
+      }),
+    )
+
+    const result = await handler({ league: 'Bundesliga', week: 1, strategy: 'martingale', baseBet: 50 })
+    expect(result.content[0].text).toContain('Strategy Summary:')
+    expect(result.content[0].text).toContain('strategy=martingale')
+    expect(result.content[0].text).toContain('netProfit=')
+  })
+
+  it('get_league_fixture uses baseBet=50 when strategy is set but baseBet is omitted', async () => {
+    const { mcp, getHandler } = createMockMcp()
+    registerGetLeagueFixtureTool({ mcp } as any)
+    const handler = getHandler('get_league_fixture')
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) => {
+        if (!url.includes('FixtureHandler.aspx')) {
+          throw new Error(`Unexpected URL: ${url}`)
+        }
+        return {
+          ok: true,
+          status: 200,
+          text: async () => JSON.stringify({
+            d: JSON.stringify({
+              matches: [
+                {
+                  date: '2026-03-01',
+                  home_team: 'A',
+                  away_team: 'B',
+                  home_goals: 1,
+                  away_goals: 1,
+                  odds_draw: 3.2,
+                },
+              ],
+            }),
+          }),
+        }
+      }),
+    )
+
+    const result = await handler({ league: 'Bundesliga', week: 1, strategy: 'martingale' })
+    expect(result.content[0].text).toContain('strategy=martingale')
+    expect(result.content[0].text).toContain('baseBet=50')
+  })
+
+  it('get_league_fixture parses JS array-literal payload format', async () => {
+    const { mcp, getHandler } = createMockMcp()
+    registerGetLeagueFixtureTool({ mcp } as any)
+    const handler = getHandler('get_league_fixture')
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) => {
+        if (!url.includes('FixtureHandler.aspx')) {
+          throw new Error(`Unexpected URL: ${url}`)
+        }
+        return {
+          ok: true,
+          status: 200,
+          text: async () => `[[4308512,'13/02','MS',455,'Antalyaspor',8,'Samsunspor',null,4,3,1,3.15,2.93,1.92,1.5,1.2,1.16,1.49,1.95,0,0,0,0,'2 - 0',0]]`,
+        }
+      }),
+    )
+
+    const result = await handler({ league: 'Super League', week: 1 })
+    expect(result.content[0].text).toContain('Antalyaspor - Samsunspor')
+    expect(result.content[0].text).toContain('Score: 3-1')
+    expect(result.content[0].text).toContain('X:2.93')
+  })
+
+  it('get_league_fixture rejects strategy when comeback=true', async () => {
+    const { mcp, getHandler } = createMockMcp()
+    registerGetLeagueFixtureTool({ mcp } as any)
+    const handler = getHandler('get_league_fixture')
+
+    const result = await handler({
+      league: 'Super League',
+      week: 1,
+      comeback: true,
+      strategy: 'martingale',
+    })
+    expect(result.content[0].text).toContain('[get_league_fixture]')
+    expect(result.content[0].text).toContain('comeback=true cannot be used together with strategy')
   })
 })

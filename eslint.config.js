@@ -5,6 +5,7 @@ export default antfu(
   {
     type: 'app',
     pnpm: true,
+    ignores: ['data/**'],
     rules: {
       'pnpm/json-enforce-catalog': 'off',
       'no-console': 'warn',

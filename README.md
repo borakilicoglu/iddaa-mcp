@@ -23,6 +23,7 @@ npm install -g iddaa-mcp
   - `get_events`
   - `get_detailed_events`
   - `get_highlighted_events`
+  - `get_league_fixture`
 - Multiple transport support:
   - `stdio` (default, local development)
   - `http` (`/mcp` endpoint for remote/local clients)
@@ -30,6 +31,7 @@ npm install -g iddaa-mcp
 - Type-safe tool schemas with `zod`.
 - MCP client integration via `.cursor/mcp.json`.
 - Build and runtime flow with `pnpm`.
+- League fixture + strategy simulation in one tool (`get_league_fixture`).
 
 ## Language Support
 
@@ -45,6 +47,53 @@ Example:
   "arguments": {
     "limit": 5,
     "locale": "en"
+  }
+}
+```
+
+## `get_league_fixture` Quick Notes
+
+- Supported leagues:
+  - `Bundesliga`
+  - `Premier League`
+  - `Serie A`
+  - `Super League`
+  - `League 1`
+  - `La Liga`
+- `week` behavior:
+  - If `week` is provided, only that week is fetched.
+  - If `week` is omitted or `null`, all weeks are fetched (`1..totalWeeks`).
+- Null payload retry:
+  - If server returns `null`, the same request is retried up to `4` times.
+- Strategy behavior:
+  - `strategy` is optional: `martingale | fibonacci | none`.
+  - If `strategy` is omitted, no strategy summary is generated.
+  - If `strategy` is provided and `baseBet` is omitted, `baseBet` defaults to `50`.
+- Comeback filter behavior:
+  - `comeback` is optional (`true | false`).
+  - If `comeback=true`, only halftime-leader reversals are returned (`1->2` and `2->1`).
+  - `comeback=true` cannot be used with `strategy=martingale|fibonacci`.
+
+Example:
+
+```json
+{
+  "tool": "get_league_fixture",
+  "arguments": {
+    "league": "Super League",
+    "strategy": "martingale"
+  }
+}
+```
+
+Comeback example:
+
+```json
+{
+  "tool": "get_league_fixture",
+  "arguments": {
+    "league": "Super League",
+    "comeback": true
   }
 }
 ```
