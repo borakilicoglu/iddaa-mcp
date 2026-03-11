@@ -36,6 +36,10 @@
 - `comeback` (optional):
   - `true` | `false`
   - If `true`, only halftime-leader reversals are returned (`1->2`, `2->1`).
+- `locale` (optional):
+  - `tr` | `en`
+  - Default: `tr`
+  - Localizes fixture and strategy summary texts.
 
 ## `get_league_fixture` Runtime Notes
 

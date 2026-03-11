@@ -540,7 +540,7 @@ describe('tools', () => {
       }),
     )
 
-    const result = await handler({ league: 'Bundesliga', week: 1 })
+    const result = await handler({ league: 'Bundesliga', week: 1, locale: 'en' })
     expect(result.content[0].text).toContain('Bundesliga | Week 1')
     expect(result.content[0].text).toContain('Team A - Team B')
     expect(result.content[0].text).toContain('Score: 1-1')
@@ -552,7 +552,7 @@ describe('tools', () => {
     registerGetLeagueFixtureTool({ mcp } as any)
     const handler = getHandler('get_league_fixture')
 
-    const result = await handler({ league: 'Bundesliga', week: 99 })
+    const result = await handler({ league: 'Bundesliga', week: 99, locale: 'en' })
     expect(result.content[0].text).toContain('[get_league_fixture]')
     expect(result.content[0].text).toContain('Invalid week')
   })
@@ -580,7 +580,7 @@ describe('tools', () => {
       }),
     )
 
-    const result = await handler({ league: 'Bundesliga' })
+    const result = await handler({ league: 'Bundesliga', locale: 'en' })
     expect(result.content[0].text).toContain('Bundesliga | All Weeks | Total Weeks: 34')
     expect(result.content[0].text).toContain('Bundesliga | Week 1')
     expect(result.content[0].text).toContain('Bundesliga | Week 34')
@@ -607,7 +607,7 @@ describe('tools', () => {
     })
     vi.stubGlobal('fetch', fetchMock)
 
-    const result = await handler({ league: 'Bundesliga', week: null })
+    const result = await handler({ league: 'Bundesliga', week: null, locale: 'en' })
     expect(result.content[0].text).toContain('Bundesliga | All Weeks | Total Weeks: 34')
     expect(fetchMock).toHaveBeenCalledTimes(34)
   })
@@ -653,7 +653,7 @@ describe('tools', () => {
       }),
     )
 
-    const result = await handler({ league: 'Bundesliga', week: 1 })
+    const result = await handler({ league: 'Bundesliga', week: 1, locale: 'en' })
     expect(result.content[0].text).toContain('Retry FC - Second Try')
     expect(callCount).toBe(2)
   })
@@ -698,7 +698,7 @@ describe('tools', () => {
       }),
     )
 
-    const result = await handler({ league: 'Bundesliga', week: 1, strategy: 'martingale', baseBet: 50 })
+    const result = await handler({ league: 'Bundesliga', week: 1, strategy: 'martingale', baseBet: 50, locale: 'en' })
     expect(result.content[0].text).toContain('Strategy Summary:')
     expect(result.content[0].text).toContain('strategy=martingale')
     expect(result.content[0].text).toContain('netProfit=')
@@ -736,7 +736,7 @@ describe('tools', () => {
       }),
     )
 
-    const result = await handler({ league: 'Bundesliga', week: 1, strategy: 'martingale' })
+    const result = await handler({ league: 'Bundesliga', week: 1, strategy: 'martingale', locale: 'en' })
     expect(result.content[0].text).toContain('strategy=martingale')
     expect(result.content[0].text).toContain('baseBet=50')
   })
@@ -760,7 +760,7 @@ describe('tools', () => {
       }),
     )
 
-    const result = await handler({ league: 'Super League', week: 1 })
+    const result = await handler({ league: 'Super League', week: 1, locale: 'en' })
     expect(result.content[0].text).toContain('Antalyaspor - Samsunspor')
     expect(result.content[0].text).toContain('Score: 3-1')
     expect(result.content[0].text).toContain('X:2.93')
@@ -776,8 +776,32 @@ describe('tools', () => {
       week: 1,
       comeback: true,
       strategy: 'martingale',
+      locale: 'en',
     })
     expect(result.content[0].text).toContain('[get_league_fixture]')
     expect(result.content[0].text).toContain('comeback=true cannot be used together with strategy')
+  })
+
+  it('get_league_fixture defaults to Turkish locale', async () => {
+    const { mcp, getHandler } = createMockMcp()
+    registerGetLeagueFixtureTool({ mcp } as any)
+    const handler = getHandler('get_league_fixture')
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => ({
+        ok: true,
+        status: 200,
+        text: async () => JSON.stringify({
+          d: JSON.stringify({
+            matches: [],
+          }),
+        }),
+      })),
+    )
+
+    const result = await handler({ league: 'Bundesliga', week: 1 })
+    expect(result.content[0].text).toContain('Hafta 1')
+    expect(result.content[0].text).toContain('Maç Sayısı')
   })
 })

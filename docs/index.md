@@ -7,7 +7,7 @@ tagline: Instant Match Intelligence for MCP workflows
 hero:
   name: iddaa-mcp
   text: Instant Match Intelligence
-  tagline: Real-time iddaa sportsbook data for LLM and AI workflows.
+  tagline: MCP server for live and historical football fixtures, odds, and strategy analysis.
   actions:
     - theme: brand
       text: Get Started

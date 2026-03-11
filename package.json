@@ -2,7 +2,7 @@
   "name": "iddaa-mcp",
   "type": "module",
   "version": "0.1.4",
-  "description": "Real-time iddaa sportsbook data for MCP workflows",
+  "description": "MCP server for live and historical football fixtures, odds, and strategy analysis.",
   "contributors": [
     {
       "name": "Bora Kilicoglu"
@@ -20,7 +20,7 @@
   "keywords": [
     "iddaa",
     "iddaa-mcp",
-    "iddaa-mcp",
+    "sportsbook",
     "model-context-protocol"
   ],
   "exports": {

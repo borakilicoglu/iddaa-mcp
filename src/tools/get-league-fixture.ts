@@ -3,6 +3,7 @@ import type { SupportedLeague } from './league-catalog'
 import { runInNewContext } from 'node:vm'
 import { z } from 'zod'
 import { formatToolError } from './helpers'
+import { resolveLocale } from './i18n'
 import { LEAGUE_CATALOG } from './league-catalog'
 
 interface GenericRecord {
@@ -22,6 +23,76 @@ interface NormalizedMatch {
 }
 
 type Strategy = 'none' | 'martingale' | 'fibonacci'
+type FixtureLocale = 'tr' | 'en'
+
+interface FixtureDictionary {
+  allWeeks: string
+  baseBetLabel: string
+  baseBetMustBePositive: string
+  comebackWithStrategyError: string
+  htLabel: string
+  invalidWeek: (league: string, totalWeeks: number) => string
+  lossesLabel: string
+  matchCountLabel: string
+  netProfitLabel: string
+  noFixtureData: string
+  returnLabel: string
+  roiLabel: string
+  scoreLabel: string
+  strategyLabel: string
+  strategySummary: string
+  totalBetLabel: string
+  totalWeeks: string
+  weekLabel: string
+  winsLabel: string
+}
+
+const fixtureDictionary: Record<FixtureLocale, FixtureDictionary> = {
+  tr: {
+    allWeeks: 'Tüm Haftalar',
+    baseBetLabel: 'baseBet',
+    baseBetMustBePositive: 'baseBet 0\'dan büyük olmalı',
+    comebackWithStrategyError: 'comeback=true, strategy ile birlikte kullanılamaz',
+    htLabel: 'İY',
+    invalidWeek: (league, totalWeeks) =>
+      `Geçersiz hafta. ${league} için izin verilen aralık: 1-${totalWeeks}`,
+    lossesLabel: 'kayip',
+    matchCountLabel: 'Maç Sayısı',
+    netProfitLabel: 'netKar',
+    noFixtureData: 'Fikstür verisi bulunamadı.',
+    returnLabel: 'toplamGeriDonus',
+    roiLabel: 'roi',
+    scoreLabel: 'Skor',
+    strategyLabel: 'strateji',
+    strategySummary: 'Strateji Özeti:',
+    totalBetLabel: 'toplamBahis',
+    totalWeeks: 'Toplam Hafta',
+    weekLabel: 'Hafta',
+    winsLabel: 'kazanc',
+  },
+  en: {
+    allWeeks: 'All Weeks',
+    baseBetLabel: 'baseBet',
+    baseBetMustBePositive: 'baseBet must be greater than 0',
+    comebackWithStrategyError: 'comeback=true cannot be used together with strategy',
+    htLabel: 'HT',
+    invalidWeek: (league, totalWeeks) =>
+      `Invalid week. Allowed range for ${league}: 1-${totalWeeks}`,
+    lossesLabel: 'losses',
+    matchCountLabel: 'Match Count',
+    netProfitLabel: 'netProfit',
+    noFixtureData: 'No fixture data found.',
+    returnLabel: 'totalReturn',
+    roiLabel: 'roi',
+    scoreLabel: 'Score',
+    strategyLabel: 'strategy',
+    strategySummary: 'Strategy Summary:',
+    totalBetLabel: 'totalBet',
+    totalWeeks: 'Total Weeks',
+    weekLabel: 'Week',
+    winsLabel: 'wins',
+  },
+}
 
 const NULL_PAYLOAD_RETRIES = 4
 
@@ -299,6 +370,7 @@ function simulateStrategy(
   matches: NormalizedMatch[],
   strategy: Exclude<Strategy, 'none'>,
   baseBet: number,
+  dict: FixtureDictionary,
 ): string {
   let totalBet = 0
   let totalReturn = 0
@@ -340,14 +412,14 @@ function simulateStrategy(
   const netProfit = totalReturn - totalBet
   const roi = totalBet > 0 ? (netProfit / totalBet) * 100 : 0
   return [
-    'Strategy Summary:',
-    `strategy=${strategy}`,
-    `baseBet=${formatAmount(baseBet)}`,
-    `totalBet=${formatAmount(totalBet)}`,
-    `totalReturn=${formatAmount(totalReturn)}`,
-    `netProfit=${formatAmount(netProfit)}`,
-    `roi=${formatAmount(roi)}%`,
-    `wins=${wins} losses=${losses}`,
+    dict.strategySummary,
+    `${dict.strategyLabel}=${strategy}`,
+    `${dict.baseBetLabel}=${formatAmount(baseBet)}`,
+    `${dict.totalBetLabel}=${formatAmount(totalBet)}`,
+    `${dict.returnLabel}=${formatAmount(totalReturn)}`,
+    `${dict.netProfitLabel}=${formatAmount(netProfit)}`,
+    `${dict.roiLabel}=${formatAmount(roi)}%`,
+    `${dict.winsLabel}=${wins} ${dict.lossesLabel}=${losses}`,
   ].join('\n')
 }
 
@@ -355,11 +427,12 @@ function formatFixtureText(
   league: SupportedLeague,
   week: number,
   matches: NormalizedMatch[],
+  dict: FixtureDictionary,
   options?: { includeHalftime?: boolean },
 ): string {
-  const title = `${league} | Week ${week} | Match Count: ${matches.length}`
+  const title = `${league} | ${dict.weekLabel} ${week} | ${dict.matchCountLabel}: ${matches.length}`
   if (matches.length === 0) {
-    return `${title}\n\nNo fixture data found.`
+    return `${title}\n\n${dict.noFixtureData}`
   }
 
   const lines = matches.map((match, index) => {
@@ -370,9 +443,9 @@ function formatFixtureText(
     const halftime = match.halftimeHomeGoals === null || match.halftimeAwayGoals === null
       ? '-'
       : `${match.halftimeHomeGoals}-${match.halftimeAwayGoals}`
-    const halftimeText = options?.includeHalftime ? ` | HT:${halftime}` : ''
+    const halftimeText = options?.includeHalftime ? ` | ${dict.htLabel}:${halftime}` : ''
 
-    return `${index + 1}. ${match.date} | ${match.home} - ${match.away} | Score: ${score}${halftimeText} | X:${drawOdd}`
+    return `${index + 1}. ${match.date} | ${match.home} - ${match.away} | ${dict.scoreLabel}: ${score}${halftimeText} | X:${drawOdd}`
   })
 
   return `${title}\n\n${lines.join('\n')}`
@@ -407,13 +480,20 @@ export function registerGetLeagueFixtureTool({ mcp }: McpToolContext): void {
         .boolean()
         .optional()
         .describe('If true, only matches with halftime-leader reversal (1->2, 2->1) are returned'),
+      locale: z
+        .enum(['tr', 'en'])
+        .optional()
+        .default('tr')
+        .describe('Language for response text (default: tr)'),
     },
-    async ({ league, week, strategy, baseBet, comeback }) => {
+    async ({ league, week, strategy, baseBet, comeback, locale = 'tr' }) => {
       try {
+        const selectedLocale = resolveLocale(locale) as FixtureLocale
+        const dict = fixtureDictionary[selectedLocale]
         const config = getLeagueConfig(league)
         const selectedComeback = comeback ?? config.defaultComeback ?? false
         if (selectedComeback && strategy && strategy !== 'none') {
-          throw new Error('comeback=true cannot be used together with strategy')
+          throw new Error(dict.comebackWithStrategyError)
         }
 
         const selectedStrategy = strategy
@@ -422,7 +502,7 @@ export function registerGetLeagueFixtureTool({ mcp }: McpToolContext): void {
           : (baseBet ?? config.defaultBaseBet ?? 50)
 
         if (selectedStrategy && selectedBaseBet <= 0) {
-          throw new Error('baseBet must be greater than 0')
+          throw new Error(dict.baseBetMustBePositive)
         }
 
         const normalizedWeek = week ?? undefined
@@ -431,9 +511,7 @@ export function registerGetLeagueFixtureTool({ mcp }: McpToolContext): void {
           normalizedWeek !== undefined
           && (normalizedWeek < 1 || normalizedWeek > config.totalWeeks)
         ) {
-          throw new Error(
-            `Invalid week. Allowed range for ${league}: 1-${config.totalWeeks}`,
-          )
+          throw new Error(dict.invalidWeek(league, config.totalWeeks))
         }
 
         const weeksToFetch = normalizedWeek !== undefined
@@ -452,7 +530,7 @@ export function registerGetLeagueFixtureTool({ mcp }: McpToolContext): void {
             : normalizedMatches
           allMatches.push(...filteredMatches)
           weekTexts.push(
-            formatFixtureText(league, currentWeek, filteredMatches, {
+            formatFixtureText(league, currentWeek, filteredMatches, dict, {
               includeHalftime: selectedComeback,
             }),
           )
@@ -460,10 +538,10 @@ export function registerGetLeagueFixtureTool({ mcp }: McpToolContext): void {
 
         const fixtureText = normalizedWeek !== undefined
           ? weekTexts[0]
-          : `${league} | All Weeks | Total Weeks: ${config.totalWeeks}\n\n${weekTexts.join('\n\n')}`
+          : `${league} | ${dict.allWeeks} | ${dict.totalWeeks}: ${config.totalWeeks}\n\n${weekTexts.join('\n\n')}`
         const strategyText = !selectedStrategy || selectedStrategy === 'none'
           ? ''
-          : `\n\n${simulateStrategy(allMatches, selectedStrategy, selectedBaseBet)}`
+          : `\n\n${simulateStrategy(allMatches, selectedStrategy, selectedBaseBet, dict)}`
         const text = `${fixtureText}${strategyText}`
 
         return {

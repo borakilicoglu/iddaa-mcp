@@ -69,6 +69,9 @@ Example:
   - `strategy` is optional: `martingale | fibonacci | none`.
   - If `strategy` is omitted, no strategy summary is generated.
   - If `strategy` is provided and `baseBet` is omitted, `baseBet` defaults to `50`.
+- Locale behavior:
+  - `locale` is optional: `tr | en` (default: `tr`).
+  - Fixture and strategy summary texts are localized.
 - Comeback filter behavior:
   - `comeback` is optional (`true | false`).
   - If `comeback=true`, only halftime-leader reversals are returned (`1->2` and `2->1`).
