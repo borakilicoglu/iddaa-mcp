@@ -6,16 +6,19 @@ export interface LeagueConfig {
   totalWeeks: number
 }
 
-export type SupportedLeague
-  = | 'Bundesliga'
-    | 'Eredivisie'
-    | 'Premier League'
-    | 'Portuguese Premier League'
-    | 'Serie A'
-    | 'Turkish Super League'
-    | 'Swiss Super League'
-    | 'League 1'
-    | 'La Liga'
+export const LEAGUES = [
+  'Bundesliga',
+  'Eredivisie',
+  'Premier League',
+  'Portuguese Premier League',
+  'Serie A',
+  'Turkish Super League',
+  'Swiss Super League',
+  'League 1',
+  'La Liga',
+] as const
+
+export type SupportedLeague = (typeof LEAGUES)[number]
 
 export const LEAGUE_CATALOG: Record<
   SupportedLeague,

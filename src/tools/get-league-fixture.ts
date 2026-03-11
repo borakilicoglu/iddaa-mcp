@@ -4,7 +4,7 @@ import { runInNewContext } from 'node:vm'
 import { z } from 'zod'
 import { formatToolError } from './helpers'
 import { resolveLocale } from './i18n'
-import { LEAGUE_CATALOG } from './league-catalog'
+import { LEAGUE_CATALOG, LEAGUES } from './league-catalog'
 
 interface GenericRecord {
   [key: string]: unknown
@@ -457,17 +457,7 @@ export function registerGetLeagueFixtureTool({ mcp }: McpToolContext): void {
     'Fetch fixture data for selected leagues from archive source',
     {
       league: z
-        .enum([
-          'Bundesliga',
-          'Eredivisie',
-          'Premier League',
-          'Portuguese Premier League',
-          'Serie A',
-          'Turkish Super League',
-          'Swiss Super League',
-          'League 1',
-          'La Liga',
-        ])
+        .enum(LEAGUES)
         .describe('League name'),
       week: z
         .number()

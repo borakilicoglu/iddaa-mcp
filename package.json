@@ -1,7 +1,7 @@
 {
   "name": "iddaa-mcp",
   "type": "module",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "MCP server for live and historical football fixtures, odds, and strategy analysis.",
   "contributors": [
     {
@@ -55,7 +55,6 @@
     "lint:fix": "eslint --fix",
     "typecheck": "tsc --noEmit",
     "test": "vitest",
-    "release": "tsx scripts/release.ts",
     "prepare": "husky",
     "test:ci": "vitest run"
   },
