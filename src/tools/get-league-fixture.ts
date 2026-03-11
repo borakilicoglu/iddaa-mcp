@@ -459,9 +459,11 @@ export function registerGetLeagueFixtureTool({ mcp }: McpToolContext): void {
       league: z
         .enum([
           'Bundesliga',
+          'Eredivisie',
           'Premier League',
           'Serie A',
-          'Super League',
+          'Turkish Super League',
+          'Swiss Super League',
           'League 1',
           'La Liga',
         ])

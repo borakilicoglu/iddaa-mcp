@@ -1,5 +1,9 @@
 # iddaa-mcp
 
+[![npm version](https://img.shields.io/npm/v/iddaa-mcp)](https://www.npmjs.com/package/iddaa-mcp)
+[![npm downloads](https://img.shields.io/npm/dw/iddaa-mcp)](https://www.npmjs.com/package/iddaa-mcp)
+[![bundle size](https://img.shields.io/packagephobia/minzip/iddaa-mcp)](https://packagephobia.com/result?p=iddaa-mcp)
+
 ![iddaa-mcp cover](./public/cover.svg)
 
 `iddaa-mcp` gives you a focused MCP integration for iddaa sportsbook data with local and remote transport support.
@@ -55,9 +59,11 @@ Example:
 
 - Supported leagues:
   - `Bundesliga`
+  - `Eredivisie`
   - `Premier League`
   - `Serie A`
-  - `Super League`
+  - `Turkish Super League`
+  - `Swiss Super League`
   - `League 1`
   - `La Liga`
 - `week` behavior:
@@ -83,7 +89,7 @@ Example:
 {
   "tool": "get_league_fixture",
   "arguments": {
-    "league": "Super League",
+    "league": "Turkish Super League",
     "strategy": "martingale"
   }
 }
@@ -95,7 +101,7 @@ Comeback example:
 {
   "tool": "get_league_fixture",
   "arguments": {
-    "league": "Super League",
+    "league": "Turkish Super League",
     "comeback": true
   }
 }

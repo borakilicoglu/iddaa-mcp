@@ -19,9 +19,11 @@
 
 - `league` (required):
   - `Bundesliga`
+  - `Eredivisie`
   - `Premier League`
   - `Serie A`
-  - `Super League`
+  - `Turkish Super League`
+  - `Swiss Super League`
   - `League 1`
   - `La Liga`
 - `week` (optional, nullable):
@@ -75,7 +77,7 @@ Example:
 {
   "tool": "get_league_fixture",
   "arguments": {
-    "league": "Super League",
+    "league": "Turkish Super League",
     "strategy": "martingale"
   }
 }
@@ -87,7 +89,7 @@ Example:
 {
   "tool": "get_league_fixture",
   "arguments": {
-    "league": "Super League",
+    "league": "Turkish Super League",
     "comeback": true
   }
 }

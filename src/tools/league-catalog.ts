@@ -8,9 +8,11 @@ export interface LeagueConfig {
 
 export type SupportedLeague
   = | 'Bundesliga'
+    | 'Eredivisie'
     | 'Premier League'
     | 'Serie A'
-    | 'Super League'
+    | 'Turkish Super League'
+    | 'Swiss Super League'
     | 'League 1'
     | 'La Liga'
 
@@ -23,6 +25,13 @@ export const LEAGUE_CATALOG: Record<
     defaultBaseBet: 50,
     id: 70371,
     name: 'Bundesliga',
+    totalWeeks: 34,
+  },
+  'Eredivisie': {
+    defaultComeback: false,
+    defaultBaseBet: 50,
+    id: 70269,
+    name: 'Eredivisie',
     totalWeeks: 34,
   },
   'Premier League': {
@@ -39,12 +48,19 @@ export const LEAGUE_CATALOG: Record<
     name: 'Serie A',
     totalWeeks: 38,
   },
-  'Super League': {
+  'Turkish Super League': {
     defaultComeback: false,
     defaultBaseBet: 50,
     id: 70381,
-    name: 'Super League',
+    name: 'Turkish Super League',
     totalWeeks: 34,
+  },
+  'Swiss Super League': {
+    defaultComeback: false,
+    defaultBaseBet: 50,
+    id: 70309,
+    name: 'Swiss Super League',
+    totalWeeks: 33,
   },
   'League 1': {
     defaultComeback: false,

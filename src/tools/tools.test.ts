@@ -760,7 +760,7 @@ describe('tools', () => {
       }),
     )
 
-    const result = await handler({ league: 'Super League', week: 1, locale: 'en' })
+    const result = await handler({ league: 'Turkish Super League', week: 1, locale: 'en' })
     expect(result.content[0].text).toContain('Antalyaspor - Samsunspor')
     expect(result.content[0].text).toContain('Score: 3-1')
     expect(result.content[0].text).toContain('X:2.93')
@@ -772,7 +772,7 @@ describe('tools', () => {
     const handler = getHandler('get_league_fixture')
 
     const result = await handler({
-      league: 'Super League',
+      league: 'Turkish Super League',
       week: 1,
       comeback: true,
       strategy: 'martingale',
@@ -780,6 +780,50 @@ describe('tools', () => {
     })
     expect(result.content[0].text).toContain('[get_league_fixture]')
     expect(result.content[0].text).toContain('comeback=true cannot be used together with strategy')
+  })
+
+  it('get_league_fixture uses the catalog id for Swiss Super League', async () => {
+    const { mcp, getHandler } = createMockMcp()
+    registerGetLeagueFixtureTool({ mcp } as any)
+    const handler = getHandler('get_league_fixture')
+
+    const fetchMock = vi.fn(async (url: string) => ({
+      ok: true,
+      status: 200,
+      text: async () => JSON.stringify({
+        d: JSON.stringify({
+          matches: [],
+        }),
+      }),
+    }))
+    vi.stubGlobal('fetch', fetchMock)
+
+    await handler({ league: 'Swiss Super League', week: 1, locale: 'en' })
+    expect(fetchMock).toHaveBeenCalled()
+    expect(fetchMock.mock.calls[0][0]).toContain('id=70309')
+    expect(fetchMock.mock.calls[0][0]).toContain('week=1')
+  })
+
+  it('get_league_fixture uses the catalog id for Eredivisie', async () => {
+    const { mcp, getHandler } = createMockMcp()
+    registerGetLeagueFixtureTool({ mcp } as any)
+    const handler = getHandler('get_league_fixture')
+
+    const fetchMock = vi.fn(async (url: string) => ({
+      ok: true,
+      status: 200,
+      text: async () => JSON.stringify({
+        d: JSON.stringify({
+          matches: [],
+        }),
+      }),
+    }))
+    vi.stubGlobal('fetch', fetchMock)
+
+    await handler({ league: 'Eredivisie', week: 1, locale: 'en' })
+    expect(fetchMock).toHaveBeenCalled()
+    expect(fetchMock.mock.calls[0][0]).toContain('id=70269')
+    expect(fetchMock.mock.calls[0][0]).toContain('week=1')
   })
 
   it('get_league_fixture defaults to Turkish locale', async () => {
