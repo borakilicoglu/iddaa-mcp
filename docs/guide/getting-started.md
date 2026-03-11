@@ -6,6 +6,12 @@
 npm install -g iddaa-mcp
 ```
 
+Or run without installing:
+
+```bash
+npx iddaa-mcp --stdio
+```
+
 ## Run (stdio)
 
 ```bash

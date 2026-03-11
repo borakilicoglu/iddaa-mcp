@@ -2,7 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/iddaa-mcp)](https://www.npmjs.com/package/iddaa-mcp)
 [![npm downloads](https://img.shields.io/npm/dw/iddaa-mcp)](https://www.npmjs.com/package/iddaa-mcp)
-[![bundle size](https://img.shields.io/packagephobia/minzip/iddaa-mcp)](https://packagephobia.com/result?p=iddaa-mcp)
+[![install size](https://packagephobia.com/badge?p=iddaa-mcp)](https://packagephobia.com/result?p=iddaa-mcp)
 
 ![iddaa-mcp cover](./public/cover.svg)
 
@@ -18,6 +18,12 @@ Install it with:
 
 ```bash
 npm install -g iddaa-mcp
+```
+
+Or run without installing:
+
+```bash
+npx iddaa-mcp --stdio
 ```
 
 ## Features
