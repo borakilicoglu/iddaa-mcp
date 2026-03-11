@@ -10,6 +10,7 @@ export type SupportedLeague
   = | 'Bundesliga'
     | 'Eredivisie'
     | 'Premier League'
+    | 'Portuguese Premier League'
     | 'Serie A'
     | 'Turkish Super League'
     | 'Swiss Super League'
@@ -40,6 +41,13 @@ export const LEAGUE_CATALOG: Record<
     id: 70266,
     name: 'Premier League',
     totalWeeks: 38,
+  },
+  'Portuguese Premier League': {
+    defaultComeback: false,
+    defaultBaseBet: 50,
+    id: 70394,
+    name: 'Portuguese Premier League',
+    totalWeeks: 34,
   },
   'Serie A': {
     defaultComeback: false,

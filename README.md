@@ -67,6 +67,7 @@ Example:
   - `Bundesliga`
   - `Eredivisie`
   - `Premier League`
+  - `Portuguese Premier League`
   - `Serie A`
   - `Turkish Super League`
   - `Swiss Super League`
