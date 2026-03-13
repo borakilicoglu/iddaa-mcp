@@ -1,13 +1,11 @@
 {
   "name": "iddaa-mcp",
   "type": "module",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "MCP server for live and historical football fixtures, odds, and strategy analysis.",
-  "contributors": [
-    {
-      "name": "Bora Kilicoglu"
-    }
-  ],
+  "author": {
+    "name": "Bora Kilicoglu"
+  },
   "license": "MIT",
   "homepage": "https://github.com/borakilicoglu/iddaa-mcp#readme",
   "repository": {

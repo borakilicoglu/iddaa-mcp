@@ -64,7 +64,7 @@ Example:
 ## `get_league_fixture` Quick Notes
 
 - Supported leagues:
-  - Source of truth: `src/tools/league-catalog.ts` (`LEAGUES`).
+  - Source of truth: `src/shared/league-catalog.ts` (`LEAGUES`).
   - `Bundesliga`
   - `Eredivisie`
   - `Premier League`

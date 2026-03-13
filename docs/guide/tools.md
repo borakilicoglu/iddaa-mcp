@@ -13,9 +13,9 @@
 - The default filter values are `st=1`, `type=0`, and `version=0`.
 - `limit` defaults to `1000` where applicable.
 - `get_league_fixture` reads league `id` and `totalWeeks` from:
-  - `src/tools/league-catalog.ts`
+  - `src/shared/league-catalog.ts`
 - `get_league_fixture` validates `league` values via exported `LEAGUES` from:
-  - `src/tools/league-catalog.ts`
+  - `src/shared/league-catalog.ts`
 
 ## `get_league_fixture` Parameters
 

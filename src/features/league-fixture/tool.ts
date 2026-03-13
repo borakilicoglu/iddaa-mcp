@@ -1,10 +1,11 @@
 import type { McpToolContext } from '../types'
-import type { SupportedLeague } from './league-catalog'
+import type { SupportedLeague } from '../../shared/league-catalog'
 import { runInNewContext } from 'node:vm'
 import { z } from 'zod'
-import { formatToolError } from './helpers'
-import { resolveLocale } from './i18n'
-import { LEAGUE_CATALOG, LEAGUES } from './league-catalog'
+import { formatToolError } from '../../shared/helpers'
+import { resolveLocale } from '../../shared/i18n'
+import { localeSchema } from '../../shared/input-schemas'
+import { LEAGUE_CATALOG, LEAGUES } from '../../shared/league-catalog'
 
 interface GenericRecord {
   [key: string]: unknown
@@ -473,11 +474,7 @@ export function registerGetLeagueFixtureTool({ mcp }: McpToolContext): void {
         .boolean()
         .optional()
         .describe('If true, only matches with halftime-leader reversal (1->2, 2->1) are returned'),
-      locale: z
-        .enum(['tr', 'en'])
-        .optional()
-        .default('tr')
-        .describe('Language for response text (default: tr)'),
+      locale: localeSchema,
     },
     async ({ league, week, strategy, baseBet, comeback, locale = 'tr' }) => {
       try {

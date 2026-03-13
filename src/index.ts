@@ -2,8 +2,8 @@
 import type { McpToolContext } from './types'
 import { runMain as _runMain, defineCommand } from 'citty'
 import packageJson from '../package.json'
+import { registerMyTool } from './features/register-tools'
 import { createServer, startServer, stopServer } from './server'
-import { registerMyTool } from './tools'
 
 const version = packageJson.version
 

@@ -1,23 +1,17 @@
 import type { McpToolContext } from '../types'
-import { z } from 'zod'
-import { fetchJson, sportsbookEventsUrl } from './api'
-import { formatToolError } from './helpers'
-import { formatUnixDate, getDictionary } from './i18n'
-import { eventsResponseSchema } from './schemas'
+import { fetchJson, sportsbookEventsUrl } from '../../shared/api'
+import { formatToolError } from '../../shared/helpers'
+import { formatUnixDate, getDictionary } from '../../shared/i18n'
+import { localeSchema, sportsbookFilterSchemas } from '../../shared/input-schemas'
+import { eventsResponseSchema } from '../../shared/schemas'
 
 export function registerGetEventsTool({ mcp }: McpToolContext): void {
   mcp.tool(
     'get_events',
     'Fetch sports events from Iddaa sportsbook API',
     {
-      st: z.number().optional().describe('Sport type filter (default: 1)'),
-      type: z.number().optional().describe('Event type filter (default: 0)'),
-      version: z.number().optional().describe('API version (default: 0)'),
-      locale: z
-        .enum(['tr', 'en'])
-        .optional()
-        .default('tr')
-        .describe('Language for response text (default: tr)'),
+      ...sportsbookFilterSchemas,
+      locale: localeSchema,
     },
     async ({ st = 1, type = 0, version = 0, locale = 'tr' }) => {
       try {

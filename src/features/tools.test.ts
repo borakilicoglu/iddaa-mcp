@@ -1,10 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { clearResponseCache } from './api'
-import { registerGetCompetitionsTool } from './get-competitions'
-import { registerGetDetailedEventsTool } from './get-detailed-events'
-import { registerGetEventsTool } from './get-events'
-import { registerGetHighlightedEventsTool } from './get-highlighted-events'
-import { registerGetLeagueFixtureTool } from './get-league-fixture'
+import { clearResponseCache } from '../shared/api'
+import { registerGetCompetitionsTool } from './competitions/tool'
+import { registerGetDetailedEventsTool } from './detailed-events/tool'
+import { registerGetEventsTool } from './events/tool'
+import { registerGetHighlightedEventsTool } from './highlighted-events/tool'
+import { registerGetLeagueFixtureTool } from './league-fixture/tool'
 
 type ToolHandler = (args: Record<string, unknown>) => Promise<any>
 

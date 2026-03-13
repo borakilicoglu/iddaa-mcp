@@ -1,20 +1,16 @@
 import type { McpToolContext } from '../types'
-import { z } from 'zod'
-import { fetchJson, sportsbookUrl } from './api'
-import { formatToolError } from './helpers'
-import { getDictionary } from './i18n'
-import { competitionsResponseSchema } from './schemas'
+import { fetchJson, sportsbookUrl } from '../../shared/api'
+import { formatToolError } from '../../shared/helpers'
+import { getDictionary } from '../../shared/i18n'
+import { localeSchema } from '../../shared/input-schemas'
+import { competitionsResponseSchema } from '../../shared/schemas'
 
 export function registerGetCompetitionsTool({ mcp }: McpToolContext): void {
   mcp.tool(
     'get_competitions',
     'Fetch competitions from Iddaa sportsbook API',
     {
-      locale: z
-        .enum(['tr', 'en'])
-        .optional()
-        .default('tr')
-        .describe('Language for response text (default: tr)'),
+      locale: localeSchema,
     },
     async ({ locale = 'tr' }) => {
       try {

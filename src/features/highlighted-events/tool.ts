@@ -1,20 +1,20 @@
 import type { McpToolContext } from '../types'
-import type { MatchedEvent } from './types'
-import { z } from 'zod'
-import { fetchJson, fetchJsonCached, sportsbookEventsUrl, sportsbookUrl } from './api'
+import type { MatchedEvent } from '../../shared/types'
+import { fetchJson, fetchJsonCached, sportsbookEventsUrl, sportsbookUrl } from '../../shared/api'
 import {
   buildCompetitionMap,
   buildMarketConfigMap,
   formatToolError,
   mapMarketsToOdds,
-} from './helpers'
-import { formatUnixDate, getDictionary } from './i18n'
+} from '../../shared/helpers'
+import { formatUnixDate, getDictionary } from '../../shared/i18n'
+import { limitSchema, localeSchema, sportsbookFilterSchemas } from '../../shared/input-schemas'
 import {
   competitionsResponseSchema,
   eventsResponseSchema,
   highlightedEventsResponseSchema,
   marketConfigResponseSchema,
-} from './schemas'
+} from '../../shared/schemas'
 
 const REFERENCE_CACHE_TTL_MS = 60_000
 
@@ -23,18 +23,9 @@ export function registerGetHighlightedEventsTool({ mcp }: McpToolContext): void 
     'get_highlighted_events',
     'Fetch highlighted events',
     {
-      st: z.number().optional().describe('Sport type filter (default: 1)'),
-      type: z.number().optional().describe('Event type filter (default: 0)'),
-      version: z.number().optional().describe('API version (default: 0)'),
-      limit: z
-        .number()
-        .optional()
-        .describe('Limit number of results (default: 1000)'),
-      locale: z
-        .enum(['tr', 'en'])
-        .optional()
-        .default('tr')
-        .describe('Language for response text (default: tr)'),
+      ...sportsbookFilterSchemas,
+      limit: limitSchema,
+      locale: localeSchema,
     },
     async ({ st = 1, type = 0, version = 0, limit = 1000, locale = 'tr' }) => {
       try {
