@@ -8,6 +8,7 @@ export interface LeagueConfig {
 
 export const LEAGUES = [
   'Bundesliga',
+  'Belgian Pro League',
   'Eredivisie',
   'Premier League',
   'Portuguese Premier League',
@@ -30,6 +31,13 @@ export const LEAGUE_CATALOG: Record<
     id: 70371,
     name: 'Bundesliga',
     totalWeeks: 34,
+  },
+  'Belgian Pro League': {
+    defaultComeback: false,
+    defaultBaseBet: 50,
+    id: 70308,
+    name: 'Belgian Pro League',
+    totalWeeks: 30,
   },
   'Eredivisie': {
     defaultComeback: false,

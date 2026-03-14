@@ -1,4 +1,4 @@
-import type { McpToolContext } from '../types'
+import type { McpToolContext } from '../../types'
 import { fetchJson, sportsbookEventsUrl } from '../../shared/api'
 import { formatToolError } from '../../shared/helpers'
 import { formatUnixDate, getDictionary } from '../../shared/i18n'

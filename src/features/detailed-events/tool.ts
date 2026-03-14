@@ -1,5 +1,5 @@
-import type { McpToolContext } from '../types'
 import type { MatchedEvent } from '../../shared/types'
+import type { McpToolContext } from '../../types'
 import { fetchJson, fetchJsonCached, sportsbookEventsUrl, sportsbookUrl } from '../../shared/api'
 import {
   buildCompetitionMap,
@@ -7,7 +7,7 @@ import {
   formatToolError,
   mapMarketsToOdds,
 } from '../../shared/helpers'
-import { formatUnixDate, getDictionary } from '../../shared/i18n'
+import { formatUnixDate, getDictionary, translateBettingText } from '../../shared/i18n'
 import { limitSchema, localeSchema, sportsbookFilterSchemas } from '../../shared/input-schemas'
 import {
   competitionsResponseSchema,
@@ -63,7 +63,7 @@ export function registerGetDetailedEventsTool({ mcp }: McpToolContext): void {
             hn: event.hn,
             an: event.an,
             mbc: event.mbc,
-            competition: competitionName,
+            competition: translateBettingText(competitionName, locale),
             date: formatUnixDate(event.d, locale),
             odds,
           })
@@ -88,10 +88,10 @@ export function registerGetDetailedEventsTool({ mcp }: McpToolContext): void {
                   .map(
                     (
                       outcome: MatchedEvent['odds'][number]['outcomes'][number],
-                    ) => `${outcome.name}: ${outcome.odd}`,
+                    ) => `${translateBettingText(outcome.name, locale)}: ${outcome.odd}`,
                   )
                   .join(', ')
-                return `- ${market.marketName}${outcomes ? ` (${outcomes})` : ''}`
+                return `- ${translateBettingText(market.marketName, locale)}${outcomes ? ` (${outcomes})` : ''}`
               })
               .join('\n')
 

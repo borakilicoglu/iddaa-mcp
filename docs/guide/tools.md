@@ -21,6 +21,7 @@
 
 - `league` (required):
   - `Bundesliga`
+  - `Belgian Pro League`
   - `Eredivisie`
   - `Premier League`
   - `Portuguese Premier League`

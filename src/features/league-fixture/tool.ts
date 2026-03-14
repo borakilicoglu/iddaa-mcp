@@ -1,5 +1,5 @@
-import type { McpToolContext } from '../types'
 import type { SupportedLeague } from '../../shared/league-catalog'
+import type { McpToolContext } from '../../types'
 import { runInNewContext } from 'node:vm'
 import { z } from 'zod'
 import { formatToolError } from '../../shared/helpers'

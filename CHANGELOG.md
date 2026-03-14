@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.10] - 2026-03-14
+
+### Added
+
+- Leagues: `Belgian Pro League` (`id: 70308`, `totalWeeks: 30`) for `get_league_fixture`.
+
+### Changed
+
+- Localization: improved English output for `get_highlighted_events` and `get_detailed_events` by translating common Turkish league/market labels in response text.
+- Code quality: fixed feature-module import paths/order and lint issues after `features/shared` refactor.
+- Tests: fixed typing issue in fixture catalog-id assertions (`fetchMock` call argument typing).
+
 ## [0.1.9] - 2026-03-13
 
 ### Changed

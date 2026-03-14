@@ -1,14 +1,27 @@
-import type { McpToolContext } from '../types'
 import type { MatchedEvent } from '../../shared/types'
-import { fetchJson, fetchJsonCached, sportsbookEventsUrl, sportsbookUrl } from '../../shared/api'
+import type { McpToolContext } from '../../types'
+import {
+  fetchJson,
+  fetchJsonCached,
+  sportsbookEventsUrl,
+  sportsbookUrl,
+} from '../../shared/api'
 import {
   buildCompetitionMap,
   buildMarketConfigMap,
   formatToolError,
   mapMarketsToOdds,
 } from '../../shared/helpers'
-import { formatUnixDate, getDictionary } from '../../shared/i18n'
-import { limitSchema, localeSchema, sportsbookFilterSchemas } from '../../shared/input-schemas'
+import {
+  formatUnixDate,
+  getDictionary,
+  translateBettingText,
+} from '../../shared/i18n'
+import {
+  limitSchema,
+  localeSchema,
+  sportsbookFilterSchemas,
+} from '../../shared/input-schemas'
 import {
   competitionsResponseSchema,
   eventsResponseSchema,
@@ -18,7 +31,9 @@ import {
 
 const REFERENCE_CACHE_TTL_MS = 60_000
 
-export function registerGetHighlightedEventsTool({ mcp }: McpToolContext): void {
+export function registerGetHighlightedEventsTool({
+  mcp,
+}: McpToolContext): void {
   mcp.tool(
     'get_highlighted_events',
     'Fetch highlighted events',
@@ -70,15 +85,20 @@ export function registerGetHighlightedEventsTool({ mcp }: McpToolContext): void 
             const competitionName
               = competitionMap.get(event.ci) || dict.unknownCompetition
 
-            const odds = mapMarketsToOdds(event.m, marketConfigMap, dict.unknownMarket)
+            const odds = mapMarketsToOdds(
+              event.m,
+              marketConfigMap,
+              dict.unknownMarket,
+            )
 
             matchedEvents.push({
               eventId: event.i,
-              competitionId: typeof event.ci === 'number' ? event.ci : undefined,
+              competitionId:
+                typeof event.ci === 'number' ? event.ci : undefined,
               hn: event.hn,
               an: event.an,
               mbc: event.mbc,
-              competition: competitionName,
+              competition: translateBettingText(competitionName, locale),
               date: formatUnixDate(event.d, locale),
               odds,
             })
@@ -103,10 +123,11 @@ export function registerGetHighlightedEventsTool({ mcp }: McpToolContext): void 
                   .map(
                     (
                       outcome: MatchedEvent['odds'][number]['outcomes'][number],
-                    ) => `${outcome.name}: ${outcome.odd}`,
+                    ) =>
+                      `${translateBettingText(outcome.name, locale)}: ${outcome.odd}`,
                   )
                   .join(', ')
-                return `- ${market.marketName}${outcomes ? ` (${outcomes})` : ''}`
+                return `- ${translateBettingText(market.marketName, locale)}${outcomes ? ` (${outcomes})` : ''}`
               })
               .join('\n')
 

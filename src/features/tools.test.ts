@@ -787,7 +787,7 @@ describe('tools', () => {
     registerGetLeagueFixtureTool({ mcp } as any)
     const handler = getHandler('get_league_fixture')
 
-    const fetchMock = vi.fn(async (url: string) => ({
+    const fetchMock = vi.fn(async (_url: string) => ({
       ok: true,
       status: 200,
       text: async () => JSON.stringify({
@@ -809,7 +809,7 @@ describe('tools', () => {
     registerGetLeagueFixtureTool({ mcp } as any)
     const handler = getHandler('get_league_fixture')
 
-    const fetchMock = vi.fn(async (url: string) => ({
+    const fetchMock = vi.fn(async (_url: string) => ({
       ok: true,
       status: 200,
       text: async () => JSON.stringify({
@@ -831,7 +831,7 @@ describe('tools', () => {
     registerGetLeagueFixtureTool({ mcp } as any)
     const handler = getHandler('get_league_fixture')
 
-    const fetchMock = vi.fn(async () => ({
+    const fetchMock = vi.fn(async (_url: string) => ({
       ok: true,
       status: 200,
       text: async () => JSON.stringify({
