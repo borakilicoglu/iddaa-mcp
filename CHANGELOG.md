@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.13] - 2026-03-20
+
+### Added
+
+- Leagues: `English Championship` (`id: 70340`, `totalWeeks: 46`) for `get_league_fixture`.
+
+### Changed
+
+- README: added a `license` badge to the centered badge row.
+
 ## [0.1.12] - 2026-03-20
 
 ### Added

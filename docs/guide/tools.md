@@ -23,6 +23,7 @@
   - `Bundesliga`
   - `Brazilian Serie A`
   - `Belgian Pro League`
+  - `English Championship`
   - `Eredivisie`
   - `Premier League`
   - `Portuguese Premier League`
