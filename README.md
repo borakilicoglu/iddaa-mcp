@@ -1,7 +1,7 @@
 # iddaa-mcp
 
 [![npm version](https://img.shields.io/npm/v/iddaa-mcp)](https://www.npmjs.com/package/iddaa-mcp)
-[![npm downloads](https://img.shields.io/npm/dw/iddaa-mcp)](https://www.npmjs.com/package/iddaa-mcp)
+[![npm downloads](https://img.shields.io/npm/dt/iddaa-mcp)](https://www.npmjs.com/package/iddaa-mcp)
 [![install size](https://packagephobia.com/badge?p=iddaa-mcp)](https://packagephobia.com/result?p=iddaa-mcp)
 
 ![iddaa-mcp cover](./public/cover.svg)
@@ -98,7 +98,7 @@ Example:
 {
   "tool": "get_league_fixture",
   "arguments": {
-    "league": "Turkish Super League",
+    "league": "Bundesliga",
     "strategy": "martingale"
   }
 }
@@ -110,7 +110,7 @@ Comeback example:
 {
   "tool": "get_league_fixture",
   "arguments": {
-    "league": "Turkish Super League",
+    "league": "Bundesliga",
     "comeback": true
   }
 }

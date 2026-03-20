@@ -81,7 +81,7 @@ Example:
 {
   "tool": "get_league_fixture",
   "arguments": {
-    "league": "Turkish Super League",
+    "league": "Bundesliga",
     "strategy": "martingale"
   }
 }
@@ -93,7 +93,7 @@ Example:
 {
   "tool": "get_league_fixture",
   "arguments": {
-    "league": "Turkish Super League",
+    "league": "Bundesliga",
     "comeback": true
   }
 }
