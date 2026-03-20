@@ -66,6 +66,7 @@ Example:
 - Supported leagues:
   - Source of truth: `src/shared/league-catalog.ts` (`LEAGUES`).
   - `Bundesliga`
+  - `Brazilian Serie A`
   - `Belgian Pro League`
   - `Eredivisie`
   - `Premier League`

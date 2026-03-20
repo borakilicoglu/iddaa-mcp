@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.11] - 2026-03-20
+
+### Added
+
+- Leagues: `Brazilian Serie A` (`id: 71950`, `totalWeeks: 38`) for `get_league_fixture`.
+
+### Changed
+
+- README: npm downloads badge now uses total downloads (`dt`) instead of weekly downloads (`dw`).
+- Docs: `get_league_fixture` examples now use `Bundesliga` as the default example league.
+
 ## [0.1.10] - 2026-03-14
 
 ### Added

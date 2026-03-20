@@ -8,6 +8,7 @@ export interface LeagueConfig {
 
 export const LEAGUES = [
   'Bundesliga',
+  'Brazilian Serie A',
   'Belgian Pro League',
   'Eredivisie',
   'Premier League',
@@ -21,16 +22,20 @@ export const LEAGUES = [
 
 export type SupportedLeague = (typeof LEAGUES)[number]
 
-export const LEAGUE_CATALOG: Record<
-  SupportedLeague,
-  LeagueConfig
-> = {
-  'Bundesliga': {
+export const LEAGUE_CATALOG: Record<SupportedLeague, LeagueConfig> = {
+  Bundesliga: {
     defaultComeback: false,
     defaultBaseBet: 50,
     id: 70371,
     name: 'Bundesliga',
     totalWeeks: 34,
+  },
+  'Brazilian Serie A': {
+    defaultComeback: false,
+    defaultBaseBet: 50,
+    id: 71950,
+    name: 'Brazilian Serie A',
+    totalWeeks: 38,
   },
   'Belgian Pro League': {
     defaultComeback: false,
@@ -39,7 +44,7 @@ export const LEAGUE_CATALOG: Record<
     name: 'Belgian Pro League',
     totalWeeks: 30,
   },
-  'Eredivisie': {
+  Eredivisie: {
     defaultComeback: false,
     defaultBaseBet: 50,
     id: 70269,
