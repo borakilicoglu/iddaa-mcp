@@ -26,6 +26,7 @@
   - `Eredivisie`
   - `Premier League`
   - `Portuguese Premier League`
+  - `Scottish Premiership`
   - `Serie A`
   - `Turkish Super League`
   - `Swiss Super League`

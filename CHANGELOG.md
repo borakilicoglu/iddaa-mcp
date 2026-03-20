@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.12] - 2026-03-20
+
+### Added
+
+- Leagues: `Scottish Premiership` (`id: 70290`, `totalWeeks: 33`) for `get_league_fixture`.
+
+### Changed
+
+- README: centered the badge row and cover image, and removed the top-level `iddaa-mcp` title.
+
 ## [0.1.11] - 2026-03-20
 
 ### Added

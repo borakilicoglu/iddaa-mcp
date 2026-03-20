@@ -13,6 +13,7 @@ export const LEAGUES = [
   'Eredivisie',
   'Premier League',
   'Portuguese Premier League',
+  'Scottish Premiership',
   'Serie A',
   'Turkish Super League',
   'Swiss Super League',
@@ -64,6 +65,13 @@ export const LEAGUE_CATALOG: Record<SupportedLeague, LeagueConfig> = {
     id: 70394,
     name: 'Portuguese Premier League',
     totalWeeks: 34,
+  },
+  'Scottish Premiership': {
+    defaultComeback: false,
+    defaultBaseBet: 50,
+    id: 70290,
+    name: 'Scottish Premiership',
+    totalWeeks: 33,
   },
   'Serie A': {
     defaultComeback: false,

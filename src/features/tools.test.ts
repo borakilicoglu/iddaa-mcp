@@ -870,6 +870,28 @@ describe('tools', () => {
     expect(fetchMock.mock.calls[0][0]).toContain('week=1')
   })
 
+  it('get_league_fixture uses the catalog id for Scottish Premiership', async () => {
+    const { mcp, getHandler } = createMockMcp()
+    registerGetLeagueFixtureTool({ mcp } as any)
+    const handler = getHandler('get_league_fixture')
+
+    const fetchMock = vi.fn(async (_url: string) => ({
+      ok: true,
+      status: 200,
+      text: async () => JSON.stringify({
+        d: JSON.stringify({
+          matches: [],
+        }),
+      }),
+    }))
+    vi.stubGlobal('fetch', fetchMock)
+
+    await handler({ league: 'Scottish Premiership', week: 1, locale: 'en' })
+    expect(fetchMock).toHaveBeenCalled()
+    expect(fetchMock.mock.calls[0][0]).toContain('id=70290')
+    expect(fetchMock.mock.calls[0][0]).toContain('week=1')
+  })
+
   it('get_league_fixture defaults to Turkish locale', async () => {
     const { mcp, getHandler } = createMockMcp()
     registerGetLeagueFixtureTool({ mcp } as any)

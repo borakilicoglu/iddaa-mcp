@@ -1,10 +1,12 @@
-# iddaa-mcp
+<p align="center">
+  <a href="https://www.npmjs.com/package/iddaa-mcp"><img alt="npm version" src="https://img.shields.io/npm/v/iddaa-mcp"></a>
+  <a href="https://www.npmjs.com/package/iddaa-mcp"><img alt="npm downloads" src="https://img.shields.io/npm/dt/iddaa-mcp"></a>
+  <a href="https://packagephobia.com/result?p=iddaa-mcp"><img alt="install size" src="https://packagephobia.com/badge?p=iddaa-mcp"></a>
+</p>
 
-[![npm version](https://img.shields.io/npm/v/iddaa-mcp)](https://www.npmjs.com/package/iddaa-mcp)
-[![npm downloads](https://img.shields.io/npm/dt/iddaa-mcp)](https://www.npmjs.com/package/iddaa-mcp)
-[![install size](https://packagephobia.com/badge?p=iddaa-mcp)](https://packagephobia.com/result?p=iddaa-mcp)
-
-![iddaa-mcp cover](./public/cover.svg)
+<p align="center">
+  <img alt="iddaa-mcp cover" src="./public/cover.svg">
+</p>
 
 `iddaa-mcp` gives you a focused MCP integration for iddaa sportsbook data with local and remote transport support.
 
@@ -71,6 +73,7 @@ Example:
   - `Eredivisie`
   - `Premier League`
   - `Portuguese Premier League`
+  - `Scottish Premiership`
   - `Serie A`
   - `Turkish Super League`
   - `Swiss Super League`
