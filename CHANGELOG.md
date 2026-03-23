@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.14] - 2026-03-23
+
+### Added
+
+- Leagues: `Danish Super League` (`id: 70183`, `totalWeeks: 22`) for `get_league_fixture`.
+
+### Changed
+
+- Docs: updated README and tools guide supported league lists for `get_league_fixture`.
+
 ## [0.1.13] - 2026-03-20
 
 ### Added

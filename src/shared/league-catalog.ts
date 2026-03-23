@@ -10,6 +10,7 @@ export const LEAGUES = [
   'Bundesliga',
   'Brazilian Serie A',
   'Belgian Pro League',
+  'Danish Super League',
   'English Championship',
   'Eredivisie',
   'Premier League',
@@ -45,6 +46,13 @@ export const LEAGUE_CATALOG: Record<SupportedLeague, LeagueConfig> = {
     id: 70308,
     name: 'Belgian Pro League',
     totalWeeks: 30,
+  },
+  'Danish Super League': {
+    defaultComeback: false,
+    defaultBaseBet: 50,
+    id: 70183,
+    name: 'Danish Super League',
+    totalWeeks: 22,
   },
   'English Championship': {
     defaultComeback: false,

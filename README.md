@@ -71,6 +71,7 @@ Example:
   - `Bundesliga`
   - `Brazilian Serie A`
   - `Belgian Pro League`
+  - `Danish Super League`
   - `English Championship`
   - `Eredivisie`
   - `Premier League`
