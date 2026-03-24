@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.15] - 2026-03-24
+
+### Added
+
+- Leagues: `Austrian Bundesliga` (`id: 70373`, `totalWeeks: 22`) for `get_league_fixture`.
+
 ## [0.1.14] - 2026-03-23
 
 ### Added

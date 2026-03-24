@@ -74,6 +74,7 @@ Source of truth: `src/shared/league-catalog.ts` (`LEAGUES`).
 
 | League                    | Total Weeks |
 | ------------------------- | ----------: |
+| Austrian Bundesliga       |          22 |
 | Bundesliga                |          34 |
 | Brazilian Serie A         |          38 |
 | Belgian Pro League        |          30 |

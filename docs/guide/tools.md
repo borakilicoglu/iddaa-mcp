@@ -20,6 +20,7 @@
 ## `get_league_fixture` Parameters
 
 - `league` (required):
+  - `Austrian Bundesliga`
   - `Bundesliga`
   - `Brazilian Serie A`
   - `Belgian Pro League`

@@ -7,6 +7,7 @@ export interface LeagueConfig {
 }
 
 export const LEAGUES = [
+  'Austrian Bundesliga',
   'Bundesliga',
   'Brazilian Serie A',
   'Belgian Pro League',
@@ -26,6 +27,13 @@ export const LEAGUES = [
 export type SupportedLeague = (typeof LEAGUES)[number]
 
 export const LEAGUE_CATALOG: Record<SupportedLeague, LeagueConfig> = {
+  'Austrian Bundesliga': {
+    defaultComeback: false,
+    defaultBaseBet: 50,
+    id: 70373,
+    name: 'Austrian Bundesliga',
+    totalWeeks: 22,
+  },
   Bundesliga: {
     defaultComeback: false,
     defaultBaseBet: 50,
