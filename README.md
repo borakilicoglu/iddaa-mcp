@@ -4,26 +4,33 @@
 
 <p align="center">
   <a href="https://www.npmjs.com/package/iddaa-mcp"><img alt="npm version" src="https://img.shields.io/npm/v/iddaa-mcp"></a>
-  <a href="https://www.npmjs.com/package/iddaa-mcp"><img alt="npm downloads" src="https://img.shields.io/npm/dt/iddaa-mcp"></a>
+  <a href="https://github.com/sponsors/borakilicoglu"><img alt="support" src="https://img.shields.io/badge/Support-Sponsor-ea4aaa"></a>
   <a href="./LICENSE"><img alt="license" src="https://img.shields.io/github/license/borakilicoglu/iddaa-mcp"></a>
+  <a href="https://www.npmjs.com/package/iddaa-mcp"><img alt="npm downloads" src="https://img.shields.io/npm/dt/iddaa-mcp"></a>
   <a href="https://packagephobia.com/result?p=iddaa-mcp"><img alt="install size" src="https://packagephobia.com/badge?p=iddaa-mcp"></a>
 </p>
 
-<div align="center" style="width: 80%; margin: 0 auto;">
-  <p>Access iddaa sportsbook data through a focused MCP server.</p>
-</div>
+## Overview
 
-Install it with:
+Built for MCP-compatible workflows, iddaa-mcp provides a clean and developer-friendly way to access iddaa sportsbook data. It covers competitions, events, detailed events, highlighted matches, and historical league fixture analysis, with support for `stdio` and HTTP transports, localized output, and easy integration with clients such as Cursor and Inspector.
+
+## Install
+
+Install globally if you want a reusable local command:
 
 ```bash
 npm install -g iddaa-mcp
 ```
 
-Or run without installing:
+Or run it directly without installing:
 
 ```bash
 npx iddaa-mcp --stdio
 ```
+
+## Quick Start
+
+Use `--stdio` for local MCP client integrations, or start the HTTP transport when you need a remote/local endpoint at `/mcp`.
 
 ## Features
 
@@ -244,6 +251,8 @@ Use the `inspect` command to debug your mcp server
 | `stdio`  | Standard I/O       | (None)                                                        | Default    |
 | `http`   | HTTP REST          | `--port <num>` (def: 3000), `--endpoint <path>` (def: `/mcp`) |            |
 | `sse`    | Server-Sent Events | `--port <num>` (def: 3000)                                    | Deprecated |
+
+Support this project: https://github.com/sponsors/borakilicoglu
 
 ## License
 
