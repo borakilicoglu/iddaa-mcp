@@ -252,7 +252,9 @@ Use the `inspect` command to debug your mcp server
 | `http`   | HTTP REST          | `--port <num>` (def: 3000), `--endpoint <path>` (def: `/mcp`) |            |
 | `sse`    | Server-Sent Events | `--port <num>` (def: 3000)                                    | Deprecated |
 
-Support this project: https://github.com/sponsors/borakilicoglu
+## Support
+
+If iddaa-mcp saves you time, helps you ship faster, or makes MCP-based sportsbook workflows easier to work with, you can support the project on GitHub Sponsors: [@borakilicoglu](https://github.com/sponsors/borakilicoglu)
 
 ## License
 
