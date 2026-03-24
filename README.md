@@ -10,7 +10,7 @@
 </p>
 
 <div align="center" style="width: 80%; margin: 0 auto;">
-  <p><code>iddaa-mcp</code> gives you a focused MCP integration for iddaa sportsbook data with local and remote transport support.</p>
+  <p>Access iddaa sportsbook data through a focused MCP server.</p>
 </div>
 
 Install it with:
@@ -66,22 +66,22 @@ Source of truth: `src/shared/league-catalog.ts` (`LEAGUES`).
 
 ### Supported Leagues
 
-| League | Total Weeks |
-| --- | ---: |
-| Bundesliga | 34 |
-| Brazilian Serie A | 38 |
-| Belgian Pro League | 30 |
-| Danish Super League | 22 |
-| English Championship | 46 |
-| Eredivisie | 34 |
-| Premier League | 38 |
-| Portuguese Premier League | 34 |
-| Scottish Premiership | 33 |
-| Serie A | 38 |
-| Turkish Super League | 34 |
-| Swiss Super League | 33 |
-| League 1 | 34 |
-| La Liga | 38 |
+| League                    | Total Weeks |
+| ------------------------- | ----------: |
+| Bundesliga                |          34 |
+| Brazilian Serie A         |          38 |
+| Belgian Pro League        |          30 |
+| Danish Super League       |          22 |
+| English Championship      |          46 |
+| Eredivisie                |          34 |
+| Premier League            |          38 |
+| Portuguese Premier League |          34 |
+| Scottish Premiership      |          33 |
+| Serie A                   |          38 |
+| Turkish Super League      |          34 |
+| Swiss Super League        |          33 |
+| League 1                  |          34 |
+| La Liga                   |          38 |
 
 ### Behavior
 
@@ -89,9 +89,9 @@ Source of truth: `src/shared/league-catalog.ts` (`LEAGUES`).
 | --- | --- |
 | `week` | If provided, only that week is fetched. If omitted or `null`, all weeks are fetched (`1..totalWeeks`). |
 | Null payload retry | If the server returns `null`, the same request is retried up to `4` times. |
-| `strategy` | Optional: `martingale | fibonacci | none`. If omitted, no strategy summary is generated. If provided and `baseBet` is omitted, `baseBet` defaults to `50`. |
-| `locale` | Optional: `tr | en` with default `tr`. Fixture and strategy summary texts are localized. |
-| `comeback` | Optional: `true | false`. If `true`, only halftime-leader reversals are returned (`1->2` and `2->1`). Cannot be used with `strategy=martingale|fibonacci`. |
+| `strategy` | Optional: `martingale`, `fibonacci`, `none`. If omitted, no strategy summary is generated. If provided and `baseBet` is omitted, `baseBet` defaults to `50`. |
+| `locale` | Optional: `tr`, `en` with default `tr`. Fixture and strategy summary texts are localized. |
+| `comeback` | Optional: `true`, `false`. If `true`, only halftime-leader reversals are returned (`1->2` and `2->1`). Cannot be used with `strategy=martingale` or `strategy=fibonacci`. |
 
 Example:
 
