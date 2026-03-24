@@ -9,7 +9,9 @@
   <a href="https://packagephobia.com/result?p=iddaa-mcp"><img alt="install size" src="https://packagephobia.com/badge?p=iddaa-mcp"></a>
 </p>
 
-`iddaa-mcp` gives you a focused MCP integration for iddaa sportsbook data with local and remote transport support.
+<div align="center" style="width: 80%; margin: 0 auto;">
+  <p><code>iddaa-mcp</code> gives you a focused MCP integration for iddaa sportsbook data with local and remote transport support.</p>
+</div>
 
 Install it with:
 
@@ -58,40 +60,38 @@ Example:
 }
 ```
 
-## `get_league_fixture` Quick Notes
+## League Fixture Notes
 
-- Supported leagues:
-  - Source of truth: `src/shared/league-catalog.ts` (`LEAGUES`).
-  - `Bundesliga`
-  - `Brazilian Serie A`
-  - `Belgian Pro League`
-  - `Danish Super League`
-  - `English Championship`
-  - `Eredivisie`
-  - `Premier League`
-  - `Portuguese Premier League`
-  - `Scottish Premiership`
-  - `Serie A`
-  - `Turkish Super League`
-  - `Swiss Super League`
-  - `League 1`
-  - `La Liga`
-- `week` behavior:
-  - If `week` is provided, only that week is fetched.
-  - If `week` is omitted or `null`, all weeks are fetched (`1..totalWeeks`).
-- Null payload retry:
-  - If server returns `null`, the same request is retried up to `4` times.
-- Strategy behavior:
-  - `strategy` is optional: `martingale | fibonacci | none`.
-  - If `strategy` is omitted, no strategy summary is generated.
-  - If `strategy` is provided and `baseBet` is omitted, `baseBet` defaults to `50`.
-- Locale behavior:
-  - `locale` is optional: `tr | en` (default: `tr`).
-  - Fixture and strategy summary texts are localized.
-- Comeback filter behavior:
-  - `comeback` is optional (`true | false`).
-  - If `comeback=true`, only halftime-leader reversals are returned (`1->2` and `2->1`).
-  - `comeback=true` cannot be used with `strategy=martingale|fibonacci`.
+Source of truth: `src/shared/league-catalog.ts` (`LEAGUES`).
+
+### Supported Leagues
+
+| League | Total Weeks |
+| --- | ---: |
+| Bundesliga | 34 |
+| Brazilian Serie A | 38 |
+| Belgian Pro League | 30 |
+| Danish Super League | 22 |
+| English Championship | 46 |
+| Eredivisie | 34 |
+| Premier League | 38 |
+| Portuguese Premier League | 34 |
+| Scottish Premiership | 33 |
+| Serie A | 38 |
+| Turkish Super League | 34 |
+| Swiss Super League | 33 |
+| League 1 | 34 |
+| La Liga | 38 |
+
+### Behavior
+
+| Behavior | Details |
+| --- | --- |
+| `week` | If provided, only that week is fetched. If omitted or `null`, all weeks are fetched (`1..totalWeeks`). |
+| Null payload retry | If the server returns `null`, the same request is retried up to `4` times. |
+| `strategy` | Optional: `martingale | fibonacci | none`. If omitted, no strategy summary is generated. If provided and `baseBet` is omitted, `baseBet` defaults to `50`. |
+| `locale` | Optional: `tr | en` with default `tr`. Fixture and strategy summary texts are localized. |
+| `comeback` | Optional: `true | false`. If `true`, only halftime-leader reversals are returned (`1->2` and `2->1`). Cannot be used with `strategy=martingale|fibonacci`. |
 
 Example:
 
