@@ -11,12 +11,6 @@
 
 `iddaa-mcp` gives you a focused MCP integration for iddaa sportsbook data with local and remote transport support.
 
-Documentation site: https://borakilicoglu.github.io/iddaa-mcp/
-
-## npm Package
-
-This project is published on npm as [`iddaa-mcp`](https://www.npmjs.com/package/iddaa-mcp).
-
 Install it with:
 
 ```bash
