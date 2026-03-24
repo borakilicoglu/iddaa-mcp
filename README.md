@@ -4,7 +4,6 @@
 
 <p align="center">
   <a href="https://www.npmjs.com/package/iddaa-mcp"><img alt="npm version" src="https://img.shields.io/npm/v/iddaa-mcp"></a>
-  <a href="https://github.com/sponsors/borakilicoglu"><img alt="support" src="https://img.shields.io/badge/Support-Sponsor-ea4aaa"></a>
   <a href="./LICENSE"><img alt="license" src="https://img.shields.io/github/license/borakilicoglu/iddaa-mcp"></a>
   <a href="https://www.npmjs.com/package/iddaa-mcp"><img alt="npm downloads" src="https://img.shields.io/npm/dt/iddaa-mcp"></a>
   <a href="https://packagephobia.com/result?p=iddaa-mcp"><img alt="install size" src="https://packagephobia.com/badge?p=iddaa-mcp"></a>
