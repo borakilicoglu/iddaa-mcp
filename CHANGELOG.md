@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.16] - 2026-03-25
+
+### Added
+
+- Leagues: `2. Bundesliga` (`id: 70372`, `totalWeeks: 34`) for `get_league_fixture`.
+
 ## [0.1.15] - 2026-03-24
 
 ### Added

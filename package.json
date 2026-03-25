@@ -1,7 +1,7 @@
 {
   "name": "iddaa-mcp",
   "type": "module",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "MCP server for live and historical football fixtures, odds, and strategy analysis.",
   "author": {
     "name": "Bora Kilicoglu"
