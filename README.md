@@ -1,5 +1,9 @@
 <p align="center">
-  <img alt="iddaa-mcp cover" src="./public/cover.svg">
+  <img alt="iddaa-mcp cover" src="./public/cover.svg" />
+</p>
+
+<p align="center">
+  <b>Real-time iddaa sportsbook data for your MCP workflows.</b>
 </p>
 
 <p align="center">
@@ -9,52 +13,64 @@
   <a href="https://packagephobia.com/result?p=iddaa-mcp"><img alt="install size" src="https://packagephobia.com/badge?p=iddaa-mcp"></a>
 </p>
 
-## Overview
+---
 
-Built for MCP-compatible workflows, iddaa-mcp provides a clean and developer-friendly way to access iddaa sportsbook data. It covers competitions, events, detailed events, highlighted matches, and historical league fixture analysis, with support for `stdio` and HTTP transports, localized output, and easy integration with clients such as Cursor and Inspector.
+## ⚡ What is iddaa-mcp?
 
-## Install
+`iddaa-mcp` is an MCP server that gives you structured access to:
 
-Install globally if you want a reusable local command:
+- live and upcoming sportsbook events
+- competitions and leagues
+- detailed match data
+- highlighted events
+- historical league fixtures
 
-```bash
-npm install -g iddaa-mcp
-```
+👉 Built for AI agents, automation, and developer workflows.
 
-Or run it directly without installing:
+---
+
+## 🚀 Quick Start
+
+Run instantly:
 
 ```bash
 npx iddaa-mcp --stdio
 ```
 
-## Quick Start
+---
 
-Use `--stdio` for local MCP client integrations, or start the HTTP transport when you need a remote/local endpoint at `/mcp`.
+## 🧠 What you get
 
-## Features
+- clean, structured sportsbook data
+- MCP-compatible tools
+- ready-to-use endpoints for agents
+- localized responses (`tr`, `en`)
 
-- `iddaa` data tools ready to use:
-  - `get_competitions`
-  - `get_events`
-  - `get_detailed_events`
-  - `get_highlighted_events`
-  - `get_league_fixture`
-- Multiple transport support:
-  - `stdio` (default, local development)
-  - `http` (`/mcp` endpoint for remote/local clients)
-  - `sse` (deprecated)
-- Type-safe tool schemas with `zod`.
-- MCP client integration via `.cursor/mcp.json`.
-- Build and runtime flow with `pnpm`.
-- League fixture + strategy simulation in one tool (`get_league_fixture`).
+---
 
-## Language Support
+## 🔥 Why use it?
 
-- Default response language is Turkish (`tr`).
-- You can set `locale: "en"` in tool arguments for English output.
-- Supported values: `tr`, `en`.
+Instead of:
 
-Example:
+- scraping sportsbook data
+- handling inconsistent APIs
+- writing custom parsers
+
+👉 just plug into MCP and use ready tools.
+
+---
+
+## ⚡ Available Tools
+
+- `get_competitions`
+- `get_events`
+- `get_detailed_events`
+- `get_highlighted_events`
+- `get_league_fixture`
+
+---
+
+## 🧠 Example
 
 ```json
 {
@@ -66,39 +82,18 @@ Example:
 }
 ```
 
-## League Fixture Notes
+---
 
-Source of truth: `src/shared/league-catalog.ts` (`LEAGUES`).
+## 📊 League Fixture + Strategy
 
-### Supported Leagues
+`get_league_fixture` supports:
 
-| League                    | Total Weeks |
-| ------------------------- | ----------: |
-| Austrian Bundesliga       |          22 |
-| Bundesliga                |          34 |
-| Brazilian Serie A         |          38 |
-| Belgian Pro League        |          30 |
-| Danish Super League       |          22 |
-| English Championship      |          46 |
-| Eredivisie                |          34 |
-| Premier League            |          38 |
-| Portuguese Premier League |          34 |
-| Scottish Premiership      |          33 |
-| Serie A                   |          38 |
-| Turkish Super League      |          34 |
-| Swiss Super League        |          33 |
-| League 1                  |          34 |
-| La Liga                   |          38 |
-
-### Behavior
-
-| Behavior | Details |
-| --- | --- |
-| `week` | If provided, only that week is fetched. If omitted or `null`, all weeks are fetched (`1..totalWeeks`). |
-| Null payload retry | If the server returns `null`, the same request is retried up to `4` times. |
-| `strategy` | Optional: `martingale`, `fibonacci`, `none`. If omitted, no strategy summary is generated. If provided and `baseBet` is omitted, `baseBet` defaults to `50`. |
-| `locale` | Optional: `tr`, `en` with default `tr`. Fixture and strategy summary texts are localized. |
-| `comeback` | Optional: `true`, `false`. If `true`, only halftime-leader reversals are returned (`1->2` and `2->1`). Cannot be used with `strategy=martingale` or `strategy=fibonacci`. |
+- full season data
+- weekly queries
+- comeback analysis (`1→2`, `2→1`)
+- optional strategies:
+  - `martingale`
+  - `fibonacci`
 
 Example:
 
@@ -112,59 +107,13 @@ Example:
 }
 ```
 
-Comeback example:
+---
 
-```json
-{
-  "tool": "get_league_fixture",
-  "arguments": {
-    "league": "Bundesliga",
-    "comeback": true
-  }
-}
-```
+## 🌐 Transport Options
 
-## Getting Started
+### stdio (default)
 
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) (Specify version if necessary)
-- An MCP-compatible client (e.g., [Cursor](https://cursor.com/))
-
-## Usage
-
-### Supported Transport Options
-
-Model Context Protocol Supports multiple Transport methods.
-
-### stdio
-
-Recommend for local setups
-
-#### Code Editor Support
-
-Add the code snippets below
-
-- Cursor: `.cursor/mcp.json`
-
-**Local development/testing**
-
-Use this if you want to test your mcp server locally
-
-```json
-{
-  "mcpServers": {
-    "iddaa-mcp-stdio": {
-      "command": "node",
-      "args": ["./bin/cli.mjs", "--stdio"]
-    }
-  }
-}
-```
-
-**Published Package**
-
-Use this when you have published your package in the npm registry
+Best for local MCP clients like Cursor:
 
 ```json
 {
@@ -177,85 +126,97 @@ Use this when you have published your package in the npm registry
 }
 ```
 
-### Streamable HTTP
+---
 
-> Important: Streamable HTTP is not supported in Cursor yet
+### HTTP (remote / local server)
 
-Recommend for remote server usage
-
-**Important:** In contrast to stdio you need also to run the server with the correct flag
-
-**Local development**
-Use the `streamable http` transport
-
-1. Start the MCP Server
-   Run this in your terminal
-
-```bash
-node ./bin/cli.mjs --http --port 4200
-```
-
-Or with mcp inspector
-
-```bash
-pnpm run dev-http
-# pnpm run dev-sse (deprecated)
-```
-
-2. Add this to your config
-
-```json
-{
-  "mcpServers": {
-    "iddaa-mcp-http": {
-      "command": "node",
-      "args": ["./bin/cli.mjs", "--http", "--port", "4001"]
-      // "args": ["./bin/cli.mjs", "--sse", "--port", "4002"] (or deprecated sse usage)
-    }
-  }
-}
-```
-
-**Published Package**
-
-Use this when you have published your package in the npm registry
-
-Run this in your terminal
+Start server:
 
 ```bash
 npx iddaa-mcp --http --port 4200
-# npx iddaa-mcp --sse --port 4201 (deprecated)
 ```
+
+Connect:
 
 ```json
 {
   "mcpServers": {
     "iddaa-mcp-http": {
       "url": "http://localhost:4200/mcp"
-      // "url": "http://localhost:4201/sse"
     }
   }
 }
 ```
 
-## Use the Inspector
+---
 
-Use the `inspect` command to debug your mcp server
+## 🌍 Language Support
 
-## Command-Line Options
+- default: `tr`
+- optional: `en`
 
-### Protocol Selection
+```json
+{
+  "locale": "en"
+}
+```
 
-| Protocol | Description        | Flags                                                         | Notes      |
-| :------- | :----------------- | :------------------------------------------------------------ | :--------- |
-| `stdio`  | Standard I/O       | (None)                                                        | Default    |
-| `http`   | HTTP REST          | `--port <num>` (def: 3000), `--endpoint <path>` (def: `/mcp`) |            |
-| `sse`    | Server-Sent Events | `--port <num>` (def: 3000)                                    | Deprecated |
+---
 
-## Support
+## ⚙️ Features
 
-If iddaa-mcp saves you time, helps you ship faster, or makes MCP-based sportsbook workflows easier to work with, you can support the project on GitHub Sponsors: [@borakilicoglu](https://github.com/sponsors/borakilicoglu)
+- MCP-native tool system
+- stdio + HTTP support
+- structured and predictable outputs
+- type-safe schemas (`zod`)
+- league fixture analysis
+- strategy simulation
+- AI-ready responses
 
-## License
+---
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+## 📦 Install
+
+```bash
+npm install -g iddaa-mcp
+```
+
+or:
+
+```bash
+npx iddaa-mcp --stdio
+```
+
+---
+
+## 🧠 Use Cases
+
+- AI betting assistants
+- sports data automation
+- odds analysis pipelines
+- MCP-based agents
+- research & strategy testing
+
+---
+
+## 💡 Philosophy
+
+> Give AI and developers clean, structured access to sportsbook data.
+
+---
+
+## ❤️ Support
+
+If this tool helps you:
+
+⭐ Star the repo  
+☕ Support via GitHub Sponsors
+
+https://github.com/sponsors/borakilicoglu
+
+---
+
+## 🔗 Links
+
+- GitHub: https://github.com/borakilicoglu/iddaa-mcp
+- npm: https://www.npmjs.com/package/iddaa-mcp
